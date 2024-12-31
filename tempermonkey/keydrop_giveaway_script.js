@@ -80,9 +80,9 @@ const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
 
             let storedIndex = localStorage.getItem('giveawayIndex');
             if (storedIndex === null || storedIndex === undefined) {
-                storedIndex = 0; // Default to the first index if not set
+                storedIndex = 0;
             } else {
-                storedIndex = parseInt(storedIndex, 10); // Ensure it's a valid number
+                storedIndex = parseInt(storedIndex, 10);
             }
             const labelText = labelTexts[storedIndex];
             console.log(`Current labelText: ${labelText}`);
@@ -91,16 +91,16 @@ const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
 
             if (button) {
                 await new Promise(r => setTimeout(r, (500 * offset)));
-                button.click(); // Trigger click after finding the button
+                button.click();
 
                 let currentIndex = (storedIndex + 1) % labelTexts.length;
-                localStorage.setItem('giveawayIndex', currentIndex); // Update index in localStorage
+                localStorage.setItem('giveawayIndex', currentIndex);
                 console.log(`Updated index to ${currentIndex}`);
                 await new Promise(r => setTimeout(r, (100)));
             } else {
                 console.log(`No button found for "${labelText}", skipping to next index.`);
                 let currentIndex = (storedIndex + 1) % labelTexts.length;
-                localStorage.setItem('giveawayIndex', currentIndex); // Update index even if no button is found
+                localStorage.setItem('giveawayIndex', currentIndex);
             }
         } else if (currentPath.includes('/giveaways/keydrop')) {
             console.log("You are on the /giveaways/keydrop page");
