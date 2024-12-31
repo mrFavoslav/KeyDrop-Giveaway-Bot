@@ -15,20 +15,24 @@ jobs:
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
-
-    - name: Install Visual Studio Build Tools
-      uses: microsoft/setup-msbuild@v1
       with:
         vs-version: '2019'
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1.0.5
 
     - name: Restore Dependencies
       run: nuget restore ./app/Guidzgo.sln
 
-    - name: Build Project with MSBuild
-      run: msbuild ./app/Guidzgo.sln /p:Configuration=Release
+    - name: Build Project
+      run: |
+        msbuild ./app/Guidzgo.sln /p:Configuration=Release /p:TargetFrameworkVersion=v4.7.2
+      shell: cmd
 
     - name: Publish Project
-      run: msbuild ./app/Guidzgo.sln /p:Configuration=Release /p:PublishDir=./release
+      run: |
+        msbuild ./app/Guidzgo.sln /p:Configuration=Release /p:PublishDir=./release
+      shell: cmd
 
     - name: Copy Script File
       run: |
