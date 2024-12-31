@@ -20,7 +20,7 @@ jobs:
       run: nuget restore app/Guidzgo.sln
 
     - name: Build Solution
-      run: msbuild app/Guidzgo.sln /p:Configuration=Release
+      run: msbuild app/Guidzgo.sln /p:Configuration=Release /p:Configuration=Debug
 
     - name: Debug Build Output
       run: |
