@@ -7,3 +7,6 @@
 /app/Guidzgo/bin
 /app/Guidzgo/obj
 /app/packages
+sc.sh
+.gitignore
+.git

@@ -56,12 +56,11 @@ jobs:
           app/Guidzgo/bin/Debug/**/*
 
     - name: Download External Script
+      shell: pwsh
       run: |
-        pwsh -Command "
-          Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/refs/heads/main/script/keydrop_giveaway_script.js' `
-              -Headers @{ Authorization = 'token ${{ secrets.GH_TOKEN }}' } `
-              -OutFile 'keydrop_giveaway_script.js'
-        "
+        Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/keydrop_giveaway_script.js' `
+            -Headers @{ Authorization = "token ${{ secrets.GH_TOKEN }}" } `
+            -OutFile 'keydrop_giveaway_script.js'
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
