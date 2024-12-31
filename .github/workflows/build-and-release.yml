@@ -63,8 +63,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          app/Guidzgo/bin/Release/**/*
-          app/Guidzgo/bin/Debug/**/*
+          app/Guidzgo/bin/Release/Guidzgo.exe
           keydrop_giveaway_script.js
+          Source code (zip)
+          Source code (tar.gz)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
