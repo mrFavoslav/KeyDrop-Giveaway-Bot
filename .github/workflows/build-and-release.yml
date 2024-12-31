@@ -13,16 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Check Token Response Status
-      run: |
-        status=$(curl -o /dev/null -s -w "%{http_code}" -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-                      https://api.github.com/user)
-        if [ "$status" -eq 200 ]; then
-          echo "Token is valid and has access."
-        else
-          echo "Token is invalid or lacks the necessary permissions. HTTP Status: $status"
-        fi
-
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
 
