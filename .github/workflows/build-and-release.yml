@@ -16,9 +16,10 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
-    - name: Install .NET Framework Targeting Pack
-      run: |
-        choco install visualstudio2019-buildtools --package-parameters "--add Microsoft.Net.Component.4.7.2.TargetingPack"
+    - name: Install Visual Studio Build Tools
+      uses: microsoft/setup-msbuild@v1
+      with:
+        vs-version: '2019'
 
     - name: Restore Dependencies
       run: nuget restore ./app/Guidzgo.sln
