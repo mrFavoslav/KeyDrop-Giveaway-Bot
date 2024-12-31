@@ -13,19 +13,21 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0 # Adjust to match your project version
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Install .NET Framework Targeting Pack
+      run: |
+        choco install visualstudio2019-buildtools --package-parameters "--add Microsoft.Net.Component.4.7.2.TargetingPack"
 
     - name: Restore Dependencies
-      run: dotnet restore ./app/Guidzgo.sln
+      run: nuget restore ./app/Guidzgo.sln
 
-    - name: Build Project
-      run: dotnet build ./app/Guidzgo.sln --configuration Release
+    - name: Build Project with MSBuild
+      run: msbuild ./app/Guidzgo.sln /p:Configuration=Release
 
     - name: Publish Project
-      run: dotnet publish ./app/Guidzgo.sln -c Release -o ./release
+      run: msbuild ./app/Guidzgo.sln /p:Configuration=Release /p:PublishDir=./release
 
     - name: Copy Script File
       run: |
