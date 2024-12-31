@@ -54,9 +54,9 @@ namespace Guidzgo
 					}));
 				});
 			}
-			catch
+			catch (Exception ex)
 			{
-
+				MessageBox.Show(ex.ToString(), "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 

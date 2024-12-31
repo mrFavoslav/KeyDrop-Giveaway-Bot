@@ -1,0 +1,9 @@
+﻿################################################################################
+# Tento soubor .gitignore byl automaticky vytvořen aplikací Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/app/.vs/Guidzgo
+/app/Guidzgo/bin
+/app/Guidzgo/obj
+/app/packages
