@@ -13,9 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Log Temporary Token (For Debugging ONLY)
+    - name: Check Token Response Status
       run: |
-        echo "Temporary token: ${{ secrets.GH_TOKEN }}"
+        status=$(curl -o /dev/null -s -w "%{http_code}" -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+                      https://api.github.com/user)
+        if [ "$status" -eq 200 ]; then
+          echo "Token is valid and has access."
+        else
+          echo "Token is invalid or lacks the necessary permissions. HTTP Status: $status"
+        fi
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
@@ -61,8 +67,11 @@ jobs:
 
     - name: Download External Script
       run: |
-        curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" -o keydrop_giveaway_script.js \
-        https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/refs/heads/main/script/keydrop_giveaway_script.js
+        pwsh -Command "
+          Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/refs/heads/main/script/keydrop_giveaway_script.js' `
+              -Headers @{ Authorization = 'token ${{ secrets.GH_TOKEN }}' } `
+              -OutFile 'keydrop_giveaway_script.js'
+        "
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
