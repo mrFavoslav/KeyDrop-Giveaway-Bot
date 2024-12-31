@@ -19,22 +19,43 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore app/Guidzgo.sln
 
-    - name: Build Solution
-      run: msbuild app/Guidzgo.sln /p:Configuration=Release /p:Configuration=Debug
+    - name: Build Release Solution
+      run: msbuild app/Guidzgo.sln /p:Configuration=Release
+      working-directory: ${{ github.workspace }}
+
+    - name: Build Debug Solution
+      run: msbuild app/Guidzgo.sln /p:Configuration=Debug
+      working-directory: ${{ github.workspace }}
+
+    - name: Log Directory Structure
+      run: tree app /F
 
     - name: Debug Build Output
       run: |
-        echo "Checking Release folder..."
-        dir app\Guidzgo\bin\Release
-        echo "Checking Debug folder..."
-        dir app\Guidzgo\bin\Debug
+        if (Test-Path app\Guidzgo\bin\Release) {
+          Write-Output "Checking Release folder..."
+          Get-ChildItem app\Guidzgo\bin\Release
+        } else {
+          Write-Output "Release folder not found."
+        }
+
+        if (Test-Path app\Guidzgo\bin\Debug) {
+          Write-Output "Checking Debug folder..."
+          Get-ChildItem app\Guidzgo\bin\Debug
+        } else {
+          Write-Output "Debug folder not found."
+        }
+
+    - name: Restore NuGet packages
+      run: nuget restore app/Guidzgo.sln
 
     - name: Upload Artifact
+      if: always()
       uses: actions/upload-artifact@v3
       with:
         name: build-output
         path: |
-          app/Guidzgo/bin/Release/**/*
+          app/Guidzgo/bin/Release/**/* 
           app/Guidzgo/bin/Debug/**/*
 
     - name: Download External Script
