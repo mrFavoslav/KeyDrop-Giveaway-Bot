@@ -1,13 +1,17 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Dynamic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,33 +30,62 @@ namespace Guidzgo
 				   (TextBox)groupBox1.Controls[c.Text.Substring(0, c.Name.Length - 1) + "T"])).ToArray();
 			t1 = textBox6;
 			t2 = textBox7;
+			defButtClr = button1.ForeColor;
 		}
 
 		KeyValuePair<CheckBox,TextBox>[] LabelPairs;
 		TextBox t1, t2;
 
-		private void button1_Click(object sender, EventArgs e)
+		Color defButtClr = Color.White;
+		private async void button1_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				string str = GetJson().Serialize();
+				var json = GetJson();
+				json.action = "set_labels";
+				string str = json.Serialize();
 				HaltUI(); // got json, stop ui
-				Task.Run(() =>
+				try
 				{
-					try
+					using (ClientWebSocket ws = new ClientWebSocket())
+					using (CancellationTokenSource cts = new CancellationTokenSource())
 					{
-						Invoke(new Action(() => Clipboard.SetText(str)));
-						MessageBox.Show("Set");
+						var cn = (Action)(() => cts.CancelAfter(connectionTimeout));
+						cn();
+						await ws.ConnectAsync(connectUri, cts.Token);
+						cn();
+						await ws.SendAsync(new ArraySegment<byte>(Encoding.ASCII.GetBytes(str)), WebSocketMessageType.Text, true, cts.Token);
+						cn();
+						await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", cts.Token);
 					}
-					catch
+					var a = (Action)(() =>
 					{
-
-					}
-					Invoke(new Action(() =>
-					{
-						ResumeUI();
-					}));
-				});
+						Clipboard.SetText(str);
+						button1.ForeColor = Color.Green;
+					});
+					if (InvokeRequired)
+						Invoke(a);
+					else
+						a();
+					await Task.Delay(1000);
+					a = (Action)(() => button1.ForeColor = defButtClr);
+					if (InvokeRequired)
+						Invoke(a);
+					else
+						a();
+				}
+				catch (Exception ex2)
+				{
+					MessageBox.Show(ex2.ToString(), "Critical BG Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				if (InvokeRequired)
+				{
+					Invoke((Action)ResumeUI);
+				}
+				else
+				{
+					ResumeUI();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -115,14 +148,165 @@ namespace Guidzgo
 			FuckUpInputs();
 			var j = new JsonThingy()
 			{
-				t1 = ParseBox(t1),
-				t2 = ParseBox(t2),
-				l = (from x in LabelPairs where x.Key.Checked select new object[] { x.Key.Text, ParseBox(x.Value) }).ToArray()
+				wo_captcha_cooldown = ParseBox(t1),
+				w_captcha_cooldown = ParseBox(t2),
+				labels = (from x in LabelPairs where x.Key.Checked select new object[] { x.Key.Text, ParseBox(x.Value) }).ToArray()
 			};
 			return j;
 		}
 
 		char[] NumChars = (from x in Enumerable.Range(0, 10) select x.ToString()[0]).ToArray();
+
+		private async void Form1_Load(object sender, EventArgs e)
+		{
+			var js = JsonSerializer.Deserialize<JsonThingy>("{\"action\":\"get_labels\",\"labels\":[[\"AMATEUR\",1],[\"CONTENDER\",1],[\"CHAMPION\",1],[\"LEGEND\",1],[\"CHALLENGER\",1]],\"wo_captcha_cooldown\":1,\"w_captcha_cooldown\":1}");
+			await GetDataAsync();
+		}
+
+		Task currentTask = Task.CompletedTask;
+
+		const string uriString = "ws://localhost:54321",
+			getDataStr = "{\"action\":\"get_labels\"}";
+		byte[] getDataBuf = Encoding.ASCII.GetBytes(getDataStr);
+		const int connectionTimeout = 5000;
+		Uri connectUri = new Uri(uriString);
+		
+		private async Task GetDataAsync()
+		{
+			HaltUI();
+			using (ClientWebSocket ws = new ClientWebSocket())
+			using (CancellationTokenSource cts = new CancellationTokenSource())
+			{
+				try
+				{
+					var tk = cts.Token;
+					var cn = (Action)(() => cts.CancelAfter(connectionTimeout));
+					cn();
+					await ws.ConnectAsync(connectUri, tk);
+					cn();
+					await ws.SendAsync(new ArraySegment<byte>(getDataBuf), WebSocketMessageType.Text, true, tk);
+					byte[] buf = new byte[1024 * 4]; // 4KB buffer is more than enough
+					var seg = new ArraySegment<byte>(buf);
+					cn();
+
+					while (true)
+					{
+						var res = await ws.ReceiveAsync(seg, tk);
+						if (res.MessageType == WebSocketMessageType.Text)
+						{
+
+							string tex = Encoding.UTF8.GetString(buf, 0, res.Count);
+							#region tempCode
+							/*
+							var js = JsonSerializer.Deserialize<JsonElement>(tex);
+							if (js.TryGetProperty("action",out var action) && action.ValueKind == JsonValueKind.String)
+							{
+								string str = action.GetString();
+								if (str == "set_labels")
+								{
+									if (js.TryGetProperty("labels",out var labels))
+									{
+										if (labels.ValueKind == JsonValueKind.Array)
+										{
+											cts.CancelAfter(-1); // abort cancellation
+											List<(string, long)> ls = new List<(string, long)>();
+											using (var en = labels.EnumerateArray())
+											{
+												foreach (var v in en)
+												{
+													if (v.ValueKind == JsonValueKind.Array)
+													{
+														using (var en2 = v.EnumerateArray())
+														{
+															en2.MoveNext();
+															if (en2.Current.ValueKind == JsonValueKind.String)
+															{
+																string s = en2.Current.GetString();
+																en2.MoveNext();
+																if (en2.Current.ValueKind == JsonValueKind.Number)
+																{
+																	long n = en2.Current.GetInt64();
+																	if (n >= 0)
+																	{
+																		ls.Add((s, n));
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+
+											// process the received input
+											
+										}
+									}
+								}
+							}
+							*/
+							#endregion tempCode
+							var js = JsonSerializer.Deserialize<JsonThingy>(tex);
+							if (js.action == "get_labels")
+							{
+								var a = (Action)(() =>
+								{
+									foreach (var chk in LabelPairs)
+									{
+										using (var en = ((JsonElement)js.labels).EnumerateArray())
+										{
+											foreach (var e in en)
+											{
+												using (var en2 = e.EnumerateArray())
+												{
+													en2.MoveNext();
+													if (en2.Current.GetString() == chk.Key.Text && en2.MoveNext())
+													{
+														chk.Value.Text = GetTime(en2.Current.GetInt64());
+														chk.Key.Checked = true;
+														continue;
+													}
+												}
+											}
+										}
+										chk.Key.Checked = false;
+									}
+									textBox6.Text = GetTime(js.wo_captcha_cooldown);
+									textBox7.Text = GetTime(js.w_captcha_cooldown);
+								});
+								if (InvokeRequired)
+									Invoke(a);
+								else
+									a();
+								break;
+							}
+						}
+					}
+					cn();
+					await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", tk);
+				}
+				catch (TaskCanceledException)
+				{
+					Action err = () => MessageBox.Show("Could not fetch current data from " + uriString + " in time", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					if (InvokeRequired)
+						Invoke(err);
+					else
+						err();
+				}
+				catch (Exception ex)
+				{
+					Action err = () => MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					if (InvokeRequired)
+						Invoke(err);
+					else
+						err();
+				}
+				if (InvokeRequired)
+					Invoke((Action)ResumeUI);
+				else
+					ResumeUI();
+			}
+		}
+
 		private long ParseBox(TextBox box)
 		{
 			try
@@ -144,6 +328,7 @@ namespace Guidzgo
 								v += long.Parse(current.ToString());
 								current.Clear();
 							}
+							wasSpace = false;
 						}
 						current.Append(c);
 					}
@@ -192,10 +377,12 @@ namespace Guidzgo
 
 	public class JsonThingy
 	{
-		public object l { get; set; } // format: "l":[["Label name",5000],["Another label",2000]] (aka array of len=2 arrays that contain string at index0 and whole nubmer at index1
-		public long t1 { get; set; }
-		public long t2 { get; set; }
+		public string action { get; set; } // BRUH WHYYY
+		public object labels { get; set; }
+		// old format: "l":[["Label name",5000],["Another label",2000]] (aka array of len=2 arrays that contain string at index0 and whole nubmer at index1
+		public long wo_captcha_cooldown { get; set; }
+		public long w_captcha_cooldown { get; set; }
 
-		public string Serialize() => System.Text.Json.JsonSerializer.Serialize(this, typeof(JsonThingy));
+		public string Serialize() => JsonSerializer.Serialize(this, typeof(JsonThingy));
 	}
 }

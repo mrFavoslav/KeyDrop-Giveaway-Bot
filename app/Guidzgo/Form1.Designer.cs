@@ -37,13 +37,13 @@
 			this.textBox7 = new System.Windows.Forms.TextBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.amateurT = new System.Windows.Forms.TextBox();
+			this.contenderT = new System.Windows.Forms.TextBox();
+			this.legendT = new System.Windows.Forms.TextBox();
+			this.challengerT = new System.Windows.Forms.TextBox();
+			this.championT = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.championT = new System.Windows.Forms.TextBox();
-			this.challengerT = new System.Windows.Forms.TextBox();
-			this.legendT = new System.Windows.Forms.TextBox();
-			this.contenderT = new System.Windows.Forms.TextBox();
-			this.amateurT = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -109,7 +109,7 @@
 			this.textBox6.Name = "textBox6";
 			this.textBox6.Size = new System.Drawing.Size(103, 26);
 			this.textBox6.TabIndex = 10;
-			this.textBox6.Text = "1000";
+			this.textBox6.Text = "30s";
 			// 
 			// textBox7
 			// 
@@ -118,7 +118,7 @@
 			this.textBox7.Name = "textBox7";
 			this.textBox7.Size = new System.Drawing.Size(103, 26);
 			this.textBox7.TabIndex = 11;
-			this.textBox7.Text = "5000";
+			this.textBox7.Text = "30s";
 			// 
 			// button1
 			// 
@@ -150,6 +150,51 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Labels";
 			// 
+			// amateurT
+			// 
+			this.amateurT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+			this.amateurT.Location = new System.Drawing.Point(150, 137);
+			this.amateurT.Name = "amateurT";
+			this.amateurT.Size = new System.Drawing.Size(100, 26);
+			this.amateurT.TabIndex = 14;
+			this.amateurT.Text = "30s";
+			// 
+			// contenderT
+			// 
+			this.contenderT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+			this.contenderT.Location = new System.Drawing.Point(150, 107);
+			this.contenderT.Name = "contenderT";
+			this.contenderT.Size = new System.Drawing.Size(100, 26);
+			this.contenderT.TabIndex = 13;
+			this.contenderT.Text = "30s";
+			// 
+			// legendT
+			// 
+			this.legendT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+			this.legendT.Location = new System.Drawing.Point(150, 77);
+			this.legendT.Name = "legendT";
+			this.legendT.Size = new System.Drawing.Size(100, 26);
+			this.legendT.TabIndex = 12;
+			this.legendT.Text = "30s";
+			// 
+			// challengerT
+			// 
+			this.challengerT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+			this.challengerT.Location = new System.Drawing.Point(150, 47);
+			this.challengerT.Name = "challengerT";
+			this.challengerT.Size = new System.Drawing.Size(100, 26);
+			this.challengerT.TabIndex = 11;
+			this.challengerT.Text = "30s";
+			// 
+			// championT
+			// 
+			this.championT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+			this.championT.Location = new System.Drawing.Point(150, 17);
+			this.championT.Name = "championT";
+			this.championT.Size = new System.Drawing.Size(100, 26);
+			this.championT.TabIndex = 10;
+			this.championT.Text = "30s";
+			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -170,47 +215,6 @@
 			this.label2.TabIndex = 15;
 			this.label2.Text = "label2";
 			// 
-			// championT
-			// 
-			this.championT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-			this.championT.Location = new System.Drawing.Point(150, 17);
-			this.championT.Name = "championT";
-			this.championT.Size = new System.Drawing.Size(100, 26);
-			this.championT.TabIndex = 10;
-			this.championT.Text = "1000";
-			// 
-			// challengerT
-			// 
-			this.challengerT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-			this.challengerT.Location = new System.Drawing.Point(150, 47);
-			this.challengerT.Name = "challengerT";
-			this.challengerT.Size = new System.Drawing.Size(100, 26);
-			this.challengerT.TabIndex = 11;
-			// 
-			// legendT
-			// 
-			this.legendT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-			this.legendT.Location = new System.Drawing.Point(150, 77);
-			this.legendT.Name = "legendT";
-			this.legendT.Size = new System.Drawing.Size(100, 26);
-			this.legendT.TabIndex = 12;
-			// 
-			// contenderT
-			// 
-			this.contenderT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-			this.contenderT.Location = new System.Drawing.Point(150, 107);
-			this.contenderT.Name = "contenderT";
-			this.contenderT.Size = new System.Drawing.Size(100, 26);
-			this.contenderT.TabIndex = 13;
-			// 
-			// amateurT
-			// 
-			this.amateurT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-			this.amateurT.Location = new System.Drawing.Point(150, 137);
-			this.amateurT.Name = "amateurT";
-			this.amateurT.Size = new System.Drawing.Size(100, 26);
-			this.amateurT.TabIndex = 14;
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -225,6 +229,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "Form1";
 			this.Text = "guj";
+			this.Load += new System.EventHandler(this.Form1_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
