@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         keydrop_giveaway_script
 // @namespace    https://www.favoslav.cz/
-// @version      0.1
-// @description  KeyDrop Giveaway Bot
-// @author       Favoslav_ & Sajpro
+// @version      0.6
+// @description  KeyDrop Giveaway Bot with Dynamic Label Updates and WebSocket Support
+// @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
 // @grant        none
 // ==/UserScript==
@@ -118,6 +118,7 @@ const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
                 await new Promise(r => setTimeout(r, (10000)));
                 if (checkForCaptcha()) {
                     console.log("CAPTCHA detected.");
+                    button.click();
                     await new Promise(r => setTimeout(r, (30000)));
                     const baseUrl = window.location.origin;
                     window.location.replace(`${baseUrl}/giveaways/list/`);
