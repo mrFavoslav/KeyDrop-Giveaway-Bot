@@ -22,11 +22,14 @@ jobs:
     - name: Build Solution
       run: msbuild app/Guidzgo.sln /p:Configuration=Release
 
+    - name: Debug Build Output
+      run: dir app\Guidzgo\bin\Release
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-output
-        path: 'app/**/bin/Release/**/*'
+        path: 'app/Guidzgo/bin/Release/**/*'
 
     - name: Download External Script
       run: |
@@ -36,7 +39,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          'app/**/bin/Release/**/*'
+          'app/Guidzgo/bin/Release/**/*'
           keydrop_giveaway_script.js
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
