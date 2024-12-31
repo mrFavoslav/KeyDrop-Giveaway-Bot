@@ -46,9 +46,6 @@ jobs:
           Write-Output "Debug folder not found."
         }
 
-    - name: Restore NuGet packages
-      run: nuget restore app/Guidzgo.sln
-
     - name: Upload Artifact
       if: always()
       uses: actions/upload-artifact@v3
@@ -70,4 +67,4 @@ jobs:
           app/Guidzgo/bin/Debug/**/*
           keydrop_giveaway_script.js
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
