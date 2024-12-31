@@ -17,16 +17,16 @@ jobs:
       uses: microsoft/setup-msbuild@v1.3.1
 
     - name: Restore NuGet packages
-      run: nuget restore Guidzgo.sln
+      run: nuget restore app/Guidzgo.sln
 
     - name: Build Solution
-      run: msbuild Guidzgo.sln /p:Configuration=Release
+      run: msbuild app/Guidzgo.sln /p:Configuration=Release
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: build-output
-        path: '**/bin/Release/**/*'
+        path: 'app/**/bin/Release/**/*'
 
     - name: Download External Script
       run: |
@@ -36,7 +36,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          '**/bin/Release/**/*'
+          'app/**/bin/Release/**/*'
           keydrop_giveaway_script.js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
