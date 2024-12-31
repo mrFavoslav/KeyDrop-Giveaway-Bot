@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         keydrop_giveaway_script
 // @namespace    https://www.favoslav.cz/
-// @version      0.6
-// @description  KeyDrop Giveaway Bot with Dynamic Label Updates and WebSocket Support
+// @version      0.8
+// @description  KeyDrop Giveaway Bot with Dynamic Label Updates and Frequency Checks
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
 // @grant        none
@@ -17,6 +17,23 @@ const labelFlags = {
 }; // true or false
 
 const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
+
+function convertToMilliseconds(d, h, m, s) {
+    const daysInMs = d * 24 * 60 * 60 * 1000;
+    const hoursInMs = h * 60 * 60 * 1000;
+    const minutesInMs = m * 60 * 1000;
+    const secondsInMs = s * 1000;
+
+    return daysInMs + hoursInMs + minutesInMs + secondsInMs;
+}
+
+const labelFrequencies = {
+    CHAMPION: convertToMilliseconds(0, 6, 0, 0), // D H M S
+    CHALLENGER: convertToMilliseconds(0, 1, 0, 0), // D H M S
+    LEGEND: convertToMilliseconds(0, 0, 15, 0), // D H M S
+    CONTENDER: convertToMilliseconds(0, 0, 5, 0), // D H M S
+    AMATEUR: convertToMilliseconds(0, 0, 0, 5) // D H M S
+};
 
 (async () => {
     function waitForElement(selector, timeout = 15000) {
@@ -64,9 +81,19 @@ const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
         const recaptchaIframe = document.querySelector('iframe[src*="recaptcha"]');
         const captchaElement = document.querySelector('.g-recaptcha');
 
-        if (captchaIframe || captchaElement || recaptchaIframe) {
+        return captchaIframe || captchaElement || recaptchaIframe;
+    }
+
+    function canProcessLabel(labelText) {
+        const lastAttemptKey = `lastAttempt_${labelText}`;
+        const lastAttempt = localStorage.getItem(lastAttemptKey);
+        const now = Date.now();
+
+        if (!lastAttempt || now - parseInt(lastAttempt, 10) >= labelFrequencies[labelText]) {
+            localStorage.setItem(lastAttemptKey, now);
             return true;
         }
+
         return false;
     }
 
@@ -84,24 +111,34 @@ const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
             } else {
                 storedIndex = parseInt(storedIndex, 10);
             }
-            const labelText = labelTexts[storedIndex];
-            console.log(`Current labelText: ${labelText}`);
 
-            const button = findButtonsByLabelText(labelText);
+            let processed = false;
 
-            if (button) {
-                await new Promise(r => setTimeout(r, (500 * offset)));
-                button.click();
+            while (!processed) {
+                const labelText = labelTexts[storedIndex];
 
-                let currentIndex = (storedIndex + 1) % labelTexts.length;
-                localStorage.setItem('giveawayIndex', currentIndex);
-                console.log(`Updated index to ${currentIndex}`);
-                await new Promise(r => setTimeout(r, (100)));
-            } else {
-                console.log(`No button found for "${labelText}", skipping to next index.`);
-                let currentIndex = (storedIndex + 1) % labelTexts.length;
-                localStorage.setItem('giveawayIndex', currentIndex);
+                if (canProcessLabel(labelText)) {
+                    console.log(`Processing labelText: ${labelText}`);
+
+                    const button = findButtonsByLabelText(labelText);
+
+                    if (button) {
+                        await new Promise(r => setTimeout(r, (500 * offset)));
+                        button.click();
+
+                        const currentIndex = (storedIndex + 1) % labelTexts.length;
+                        localStorage.setItem('giveawayIndex', currentIndex);
+                        console.log(`Updated index to ${currentIndex}`);
+                        processed = true;
+                    } else {
+                        console.log(`No button found for "${labelText}", skipping to next index.`);
+                    }
+                }
+
+                storedIndex = (storedIndex + 1) % labelTexts.length;
+                await new Promise(r => setTimeout(r, (1000)));
             }
+
         } else if (currentPath.includes('/giveaways/keydrop')) {
             console.log("You are on the /giveaways/keydrop page");
 
@@ -165,5 +202,4 @@ const labelTexts = Object.keys(labelFlags).filter(label => labelFlags[label]);
             handlePage();
         }
     }).observe(document, { subtree: true, childList: true });
-
 })();
