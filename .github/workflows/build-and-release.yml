@@ -1,68 +1,42 @@
-name: Build and Release
+name: Build and Release on Tag
 
 on:
   push:
     tags:
-      - 'v*' # Triggers the workflow on tags starting with "v"
+      - 'v*'
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.3.1
+
+    - name: Restore NuGet packages
+      run: nuget restore Guidzgo.sln
+
+    - name: Build Solution
+      run: msbuild Guidzgo.sln /p:Configuration=Release
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
       with:
-        vs-version: '2019'
+        name: build-output
+        path: '**/bin/Release/**/*'
 
-    - name: Setup NuGet
-      uses: nuget/setup-nuget@v1.0.5
-
-    - name: Restore Dependencies
-      run: nuget restore ./app/Guidzgo.sln
-
-    - name: Build Project
+    - name: Download External Script
       run: |
-        msbuild ./app/Guidzgo.sln /p:Configuration=Release /p:TargetFrameworkVersion=v4.7.2
-      shell: cmd
+        curl -o keydrop_giveaway_script.js https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/keydrop_giveaway_script.js
 
-    - name: Publish Project
-      run: |
-        msbuild ./app/Guidzgo.sln /p:Configuration=Release /p:PublishDir=./release
-      shell: cmd
-
-    - name: Copy Script File
-      run: |
-        mkdir release
-        copy ./script/keydrop_giveaway_script.js ./release/
-      shell: cmd
-
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          '**/bin/Release/**/*'
+          keydrop_giveaway_script.js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.ref_name }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Compiled Application
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./release/*.exe
-        asset_name: Guidzgo.exe
-        asset_content_type: application/vnd.microsoft.portable-executable
-
-    - name: Upload Script File
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./release/keydrop_giveaway_script.js
-        asset_name: keydrop_giveaway_script.js
-        asset_content_type: text/javascript
