@@ -93,3 +93,11 @@ KeyDrop-BOT/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Referal
+
+1. Support me!
+
+   <a href="https://kd.media/banner?code=FVSLV_">
+     <img src="https://kd.media/banner?code=FVSLV_" alt="Banner" />
+   </a>
