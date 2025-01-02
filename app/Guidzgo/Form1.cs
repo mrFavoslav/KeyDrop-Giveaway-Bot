@@ -369,7 +369,7 @@ namespace Guidzgo
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Cannot parse " + box.Text + " from " + box.Name + ":" + Environment.NewLine + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("not parse " + box.Text + " from " + box.Name + ":" + Environment.NewLine + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				throw;
 			}
 		}
