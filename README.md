@@ -94,9 +94,12 @@ KeyDrop-BOT/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Referal
+## Referral
 
 1. Support me!
 
-    ![KeyDrop PROMO](https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png)
-    ![Referal link](https://key-drop.com/?code=FVSLV_)
+    <a href="https://key-drop.com/?code=FVSLV_">
+        <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="600">
+    </a>
+
+    [Click here to visit KeyDrop with my referral code!](https://key-drop.com/?code=FVSLV_)
