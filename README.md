@@ -4,11 +4,18 @@
 
 1. Referral
 
-    <a href="https://key-drop.com/?code=FVSLV_">
-        <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="200">
-    </a>
-
-    [Click here to visit KeyDrop with my referral code!](https://key-drop.com/?code=FVSLV_)
+    <table>
+      <tr>
+        <td>
+          <a href="https://key-drop.com/?code=FVSLV_">
+            <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="150">
+          </a>
+        </td>
+        <td style="vertical-align: middle; padding-left: 20px;">
+          [Click here to visit KeyDrop with my referral code!](https://key-drop.com/?code=FVSLV_)
+        </td>
+      </tr>
+    </table>
 
 2. KO-FI
    
