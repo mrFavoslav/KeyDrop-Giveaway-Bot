@@ -75,5 +75,7 @@ jobs:
           KeyDropBOT_client.js
           Source code (zip)
           Source code (tar.gz)
+        draft: true
+        prerelease: ${{ contains(github.ref, 'debug') }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
