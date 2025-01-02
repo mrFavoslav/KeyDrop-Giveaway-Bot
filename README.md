@@ -23,7 +23,7 @@
    
     <a href="https://ko-fi.com/Y8Y7MIGB1"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=3" height="40" ></a>
 
-# KeyDrop-BOT
+# KeyDrop Giveaway Bot
 
 KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. This project includes a **client-side JavaScript** script and a **server-side C#** application, which work together to perform the desired tasks.
 
