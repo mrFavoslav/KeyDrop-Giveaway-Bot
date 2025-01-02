@@ -99,7 +99,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 1. Support me!
 
     <a href="https://key-drop.com/?code=FVSLV_">
-        <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="600">
+        <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="200">
     </a>
 
     [Click here to visit KeyDrop with my referral code!](https://key-drop.com/?code=FVSLV_)
