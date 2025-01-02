@@ -203,7 +203,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(51, 20);
 			this.label1.TabIndex = 14;
-			this.label1.Text = "Captcha Cooldown";
+			this.label1.Text = "Default Cooldown";
 			// 
 			// label2
 			// 
