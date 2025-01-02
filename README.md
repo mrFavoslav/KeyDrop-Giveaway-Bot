@@ -25,7 +25,7 @@
 
 # KeyDrop Giveaway Bot
 
-KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. This project includes a **client-side JavaScript** script and a **server-side C#** application, which work together to perform the desired tasks.
+KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. It can automatically join giveaways based on the set interval. This project includes a **client-side JavaScript** script and a **server-side C#** application, which work together to perform the desired tasks.
 
 ## Features
 
