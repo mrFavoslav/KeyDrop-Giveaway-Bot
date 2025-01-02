@@ -98,6 +98,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 1. Support me!
 
-   <a href="https://kd.media/banner?code=FVSLV_">
-     <img src="https://kd.media/banner?code=FVSLV_" alt="Banner" />
-   </a>
+    <iframe src="https://kd.media/banner?code=FVSLV_" width="600" height="150" frameborder="0" allowfullscreen></iframe>
