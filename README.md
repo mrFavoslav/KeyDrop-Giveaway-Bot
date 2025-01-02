@@ -98,4 +98,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 1. Support me!
 
-    <iframe src="https://kd.media/banner?code=FVSLV_" width="600" height="150" frameborder="0" allowfullscreen></iframe>
+    <iframe src="https://kd.media/banner?code=FVSLV_" width="100%" height="300" frameborder="0" allow="autoplay; fullscreen"></iframe>
+
+    [![Watch the banner](https://key-drop.com/?code=FVSLV_)](https://kd.media/banner?code=FVSLV_)
+
+    <video width="100%" autoplay loop muted>
+      <source src="https://kd.media/banner?code=FVSLV_" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
