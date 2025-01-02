@@ -228,7 +228,7 @@
 			this.Controls.Add(this.textBox6);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "Form1";
-			this.Text = "guj";
+			this.Text = "KeyDrop-BOT";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
