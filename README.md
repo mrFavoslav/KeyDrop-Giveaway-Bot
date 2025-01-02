@@ -12,7 +12,9 @@
           </a>
         </td>
         <td style="vertical-align: middle; padding-left: 20px;">
-          [Click here to visit KeyDrop with my referral code!](https://key-drop.com/?code=FVSLV_)
+            <a href="https://key-drop.com/?code=FVSLV_" style="margin-left: 20px; line-height: 200px;">
+                Click here to visit KeyDrop with my referral code!
+            </a>
         </td>
       </tr>
     </table>
