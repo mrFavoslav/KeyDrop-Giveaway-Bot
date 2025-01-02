@@ -27,9 +27,6 @@ jobs:
       run: msbuild app/Guidzgo.sln /p:Configuration=Debug
       working-directory: ${{ github.workspace }}
 
-    - name: Log Directory Structure
-      run: tree app /F
-
     - name: Debug Build Output
       run: |
         if (Test-Path app\Guidzgo\bin\Release) {
@@ -62,11 +59,19 @@ jobs:
             -Headers @{ Authorization = "token ${{ secrets.GH_TOKEN }}" } `
             -OutFile 'keydrop_giveaway_script.js'
 
+    - name: Rename Release Binary
+      run: |
+        if (Test-Path app\Guidzgo\bin\Release\Guidzgo.exe) {
+          Rename-Item -Path app\Guidzgo\bin\Release\Guidzgo.exe -NewName KeyDrop-BOT.exe
+        } else {
+          Write-Error "Release binary not found."
+        }
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          app/Guidzgo/bin/Release/Guidzgo.exe
+          app/Guidzgo/bin/Release/KeyDrop-BOT.exe
           keydrop_giveaway_script.js
           Source code (zip)
           Source code (tar.gz)
