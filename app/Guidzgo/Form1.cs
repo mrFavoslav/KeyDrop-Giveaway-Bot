@@ -190,8 +190,9 @@ namespace Guidzgo
 			Enabled = true;
 		}
 
-		public static Form1 Instance = new Form1();
+		public static Form1 Instance => lazyFormInit.Value;
 
+		static Lazy<Form1> lazyFormInit = new Lazy<Form1>(() => new Form1());
 		public static void Log(object o)
 		{
 			Instance.Lock(() => Instance.LogInternal(o)).Wait();

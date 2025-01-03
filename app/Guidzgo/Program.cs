@@ -15,14 +15,18 @@ namespace Guidzgo
 		[STAThread]
 		static void Main()
 		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(Get());
-		}
-
-		static Form1 Get() // the shit gets loaded before it is required for some reason, this is just for isolation
-		{
-			return Form1.Instance;
+			try
+			{
+				Application.EnableVisualStyles();
+				Application.SetCompatibleTextRenderingDefault(false);
+				Application.Run(Form1.Instance);
+			}
+			catch (Exception ex)
+			{
+				Clipboard.SetText(ex.ToString());
+				MessageBox.Show(ex.ToString());
+			}
+			
 		}
 	}
 }
