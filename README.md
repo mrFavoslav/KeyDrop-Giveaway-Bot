@@ -89,7 +89,7 @@ KeyDrop-BOT/
 
    ![Tampermonkey Image 7](https://api.favoslav.cz/v1/assets/keydropbot/monkey/7.png)
 
-9. Then go to KeyDrop, click on the extension, and you should see the script. Activate it.
+9. Then go to KeyDrop, click on the extension, and you should see the script. Activate it and refresh your page with F5.
 
 ### For the App
 
