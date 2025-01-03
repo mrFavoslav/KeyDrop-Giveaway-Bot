@@ -304,7 +304,7 @@ namespace Guidzgo
 		{
 			var js = JsonSerializer.Deserialize<JsonThingy>(str);
 			
-			if (js != null)
+			if (js != null && js.action == "set_labels")
 			{
 				if (js.labels is JsonElement je)
 				{
