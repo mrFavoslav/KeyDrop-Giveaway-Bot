@@ -44,7 +44,11 @@
 			this.championT = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
+			this.connLabel = new System.Windows.Forms.Label();
+			this.logBox = new System.Windows.Forms.TextBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// championC
@@ -109,7 +113,6 @@
 			this.textBox6.Name = "textBox6";
 			this.textBox6.Size = new System.Drawing.Size(103, 26);
 			this.textBox6.TabIndex = 10;
-			this.textBox6.Text = "30s";
 			// 
 			// textBox7
 			// 
@@ -118,7 +121,6 @@
 			this.textBox7.Name = "textBox7";
 			this.textBox7.Size = new System.Drawing.Size(103, 26);
 			this.textBox7.TabIndex = 11;
-			this.textBox7.Text = "30s";
 			// 
 			// button1
 			// 
@@ -157,7 +159,6 @@
 			this.amateurT.Name = "amateurT";
 			this.amateurT.Size = new System.Drawing.Size(100, 26);
 			this.amateurT.TabIndex = 14;
-			this.amateurT.Text = "30s";
 			// 
 			// contenderT
 			// 
@@ -166,7 +167,6 @@
 			this.contenderT.Name = "contenderT";
 			this.contenderT.Size = new System.Drawing.Size(100, 26);
 			this.contenderT.TabIndex = 13;
-			this.contenderT.Text = "30s";
 			// 
 			// legendT
 			// 
@@ -175,7 +175,6 @@
 			this.legendT.Name = "legendT";
 			this.legendT.Size = new System.Drawing.Size(100, 26);
 			this.legendT.TabIndex = 12;
-			this.legendT.Text = "30s";
 			// 
 			// challengerT
 			// 
@@ -184,7 +183,6 @@
 			this.challengerT.Name = "challengerT";
 			this.challengerT.Size = new System.Drawing.Size(100, 26);
 			this.challengerT.TabIndex = 11;
-			this.challengerT.Text = "30s";
 			// 
 			// championT
 			// 
@@ -193,7 +191,6 @@
 			this.championT.Name = "championT";
 			this.championT.Size = new System.Drawing.Size(100, 26);
 			this.championT.TabIndex = 10;
-			this.championT.Text = "30s";
 			// 
 			// label1
 			// 
@@ -201,7 +198,7 @@
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.label1.Location = new System.Drawing.Point(298, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(51, 20);
+			this.label1.Size = new System.Drawing.Size(135, 20);
 			this.label1.TabIndex = 14;
 			this.label1.Text = "Default Cooldown";
 			// 
@@ -211,15 +208,55 @@
 			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.label2.Location = new System.Drawing.Point(298, 61);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(51, 20);
+			this.label2.Size = new System.Drawing.Size(143, 20);
 			this.label2.TabIndex = 15;
 			this.label2.Text = "Captcha Cooldown";
+			// 
+			// connLabel
+			// 
+			this.connLabel.AutoSize = true;
+			this.connLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+			this.connLabel.Location = new System.Drawing.Point(294, 119);
+			this.connLabel.Name = "connLabel";
+			this.connLabel.Size = new System.Drawing.Size(129, 20);
+			this.connLabel.TabIndex = 16;
+			this.connLabel.Text = "PLACEHOLDER";
+			// 
+			// logBox
+			// 
+			this.logBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.logBox.Font = new System.Drawing.Font("Consolas", 8.25F);
+			this.logBox.Location = new System.Drawing.Point(12, 200);
+			this.logBox.Multiline = true;
+			this.logBox.Name = "logBox";
+			this.logBox.ReadOnly = true;
+			this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.logBox.Size = new System.Drawing.Size(416, 270);
+			this.logBox.TabIndex = 17;
+			this.logBox.Text = "Logs appear here\r\n";
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Image = global::Guidzgo.Properties.Resources.Term;
+			this.pictureBox1.Location = new System.Drawing.Point(407, 143);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(26, 47);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox1.TabIndex = 18;
+			this.pictureBox1.TabStop = false;
+			this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+			this.pictureBox1.DoubleClick += new System.EventHandler(this.pictureBox1_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(440, 204);
+			this.ClientSize = new System.Drawing.Size(440, 482);
+			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.logBox);
+			this.Controls.Add(this.connLabel);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.groupBox1);
@@ -229,9 +266,11 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "Form1";
 			this.Text = "KeyDrop-BOT";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -254,6 +293,9 @@
 		private System.Windows.Forms.TextBox legendT;
 		private System.Windows.Forms.TextBox challengerT;
 		private System.Windows.Forms.TextBox championT;
+		private System.Windows.Forms.Label connLabel;
+		private System.Windows.Forms.TextBox logBox;
+		private System.Windows.Forms.PictureBox pictureBox1;
 	}
 }
 

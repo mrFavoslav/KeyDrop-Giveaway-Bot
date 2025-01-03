@@ -6,14 +6,18 @@ using System.Data;
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Guidzgo.FogginClient;
 
 namespace Guidzgo
 {
@@ -31,6 +35,10 @@ namespace Guidzgo
 			t1 = textBox6;
 			t2 = textBox7;
 			defButtClr = button1.ForeColor;
+			logBoxSize = logBox.Height + 12;
+			LogsEnabled = false;
+			connLabel.Text = "";
+			logBox.MaxLength = 1024 * 8;
 		}
 
 		KeyValuePair<CheckBox,TextBox>[] LabelPairs;
@@ -41,56 +49,106 @@ namespace Guidzgo
 		{
 			try
 			{
+				if (clientCount == 0)
+				{
+					MessageBox.Show("There are no clients connected", "guh", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return;
+				}
+
 				var json = GetJson();
-				json.action = "set_labels";
+				json.action = "update_labels";
 				string str = json.Serialize();
 				HaltUI(); // got json, stop ui
 				try
 				{
-					using (ClientWebSocket ws = new ClientWebSocket())
 					using (CancellationTokenSource cts = new CancellationTokenSource())
 					{
-						var cn = (Action)(() => cts.CancelAfter(connectionTimeout));
-						cn();
-						await ws.ConnectAsync(connectUri, cts.Token);
-						cn();
-						await ws.SendAsync(new ArraySegment<byte>(Encoding.ASCII.GetBytes(str)), WebSocketMessageType.Text, true, cts.Token);
-						cn();
-						await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", cts.Token);
+						var d = Task.Delay(5000);
+						var r = await Task.WhenAny(
+							Task.WhenAll(from x in Server.Clients where x != null select x.SendAsync(str, token: cts.Token)),
+							d);
+						if (r == d)
+						{
+							// timed out
+							Log("A timeout was reached whils trying to send data to clients");
+						}
+						else
+						{
+							Log("Sucessfully sent data to clients");
+						}
 					}
-					var a = (Action)(() =>
-					{
-						Clipboard.SetText(str);
-						button1.ForeColor = Color.Green;
-					});
-					if (InvokeRequired)
-						Invoke(a);
-					else
-						a();
-					await Task.Delay(1000);
-					a = (Action)(() => button1.ForeColor = defButtClr);
-					if (InvokeRequired)
-						Invoke(a);
-					else
-						a();
+					
 				}
 				catch (Exception ex2)
 				{
-					MessageBox.Show(ex2.ToString(), "Critical BG Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					await Lock(() => MessageBox.Show(ex2.ToString(), "Critical BG Error", MessageBoxButtons.OK, MessageBoxIcon.Error));
 				}
-				if (InvokeRequired)
-				{
-					Invoke((Action)ResumeUI);
-				}
-				else
-				{
-					ResumeUI();
-				}
+				await Lock(ResumeUI);
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString(), "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		int logBoxSize;
+
+		private bool LogsEnabled
+		{
+			get => logBox.Enabled;
+
+			set
+			{
+				if (value)
+				{
+					if (!LogsEnabled)
+					{
+						logBox.Enabled = true;
+						Height += logBoxSize;
+					}
+				}
+				else
+				{
+					if (LogsEnabled)
+					{
+						logBox.Enabled = false;
+						Height -= logBoxSize;
+					}
+				}
+			}
+		}
+
+		private void UpdateCount()
+		{
+			Action a = () =>
+			{
+				connLabel.Text = "conn: " + clientCount;
+			};
+			if (InvokeRequired)
+				Invoke(a);
+			else
+				a();
+		}
+
+		bool finalClose = false;
+		bool finalClosing = false;
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (finalClose)
+				return;
+			e.Cancel = true;
+			if (finalClosing)
+				return;
+			finalClosing = true;
+			Enabled = false;
+			Server.StopAsync().ContinueWith(x =>
+			{
+				finalClose = true;
+				if (InvokeRequired)
+					Invoke((Action)Close);
+				else
+					Close();
+			});
 		}
 
 		private string GetTime(long v)
@@ -132,11 +190,34 @@ namespace Guidzgo
 			Enabled = true;
 		}
 
+		public static Form1 Instance = new Form1();
+
+		public static void Log(object o)
+		{
+			Instance.Lock(() => Instance.LogInternal(o)).Wait();
+		}
+
+		public static async Task LogAsync(object o)
+		{
+			await Instance.Lock(() => Instance.LogInternal(o));
+		}
+
+		public void LogInternal(object o)
+		{
+			string str = (o as string) ?? o.ToString();
+			str.Replace("\r", string.Empty);
+			var split = str.Split('\n');
+			for (int i = 0; i < split.Length; i++)
+			{
+				logBox.AppendText(split[i] + Environment.NewLine);
+			}
+		}
+
 		IEnumerable<TextBox> tex(Control.ControlCollection ctl) => from x in ctl.Cast<Control>() where x is TextBox select (TextBox)x;
 
 		private void FuckUpInputs()
 		{
-			foreach (var ctl in tex(Controls).Concat(tex(groupBox1.Controls)))
+			foreach (var ctl in tex(Controls).Except(new TextBox[] { logBox }).Concat(tex(groupBox1.Controls)))
 			{
 				ctl.Text = ctl.Text.Trim();
 				ctl.Text = GetTime(ParseBox(ctl));
@@ -159,20 +240,188 @@ namespace Guidzgo
 
 		private async void Form1_Load(object sender, EventArgs e)
 		{
-			var js = JsonSerializer.Deserialize<JsonThingy>("{\"action\":\"get_labels\",\"labels\":[[\"AMATEUR\",1],[\"CONTENDER\",1],[\"CHAMPION\",1],[\"LEGEND\",1],[\"CHALLENGER\",1]],\"wo_captcha_cooldown\":1,\"w_captcha_cooldown\":1}");
-			await GetDataAsync();
+			Server.ClientJoined += (FogginClient c) =>
+			{
+				Interlocked.Increment(ref clientCount);
+				UpdateCount();
+				return Task.CompletedTask;
+
+			};
+			Server.ClientLeft += (FogginClient c) =>
+			{
+				Interlocked.Decrement(ref clientCount);
+				UpdateCount();
+				return Task.CompletedTask;
+			};
+
+			Server.ClientJoined += FirstJoin;
+
+			await Server.StartAsync();
+
+			foreach (var elm in toDisable)
+				elm.Enabled = false;
 		}
 
-		Task currentTask = Task.CompletedTask;
-
-		const string uriString = "ws://localhost:54321",
-			getDataStr = "{\"action\":\"get_labels\"}";
-		byte[] getDataBuf = Encoding.ASCII.GetBytes(getDataStr);
-		const int connectionTimeout = 5000;
-		Uri connectUri = new Uri(uriString);
-		
-		private async Task GetDataAsync()
+		public SemaphoreSlim uiLock = new SemaphoreSlim(1);
+		public async Task Lock(Action a)
 		{
+			
+			try
+			{
+				if (InvokeRequired)
+				{
+					await uiLock.WaitAsync();
+					try
+					{
+						Invoke(a);
+					}
+					catch
+					{
+
+					}
+					uiLock.Release();
+				}
+				else
+				{
+					a();
+				}
+			}
+			catch
+			{
+
+			}
+			
+			
+		}
+
+		private IEnumerable<Control> toDisable => new Control[] {
+		groupBox1, textBox6, label1, textBox7, label2, button1
+		};
+
+		public class NoCanDo : Exception { }
+
+		public async Task LoadJson(string str)
+		{
+			var js = JsonSerializer.Deserialize<JsonThingy>(str);
+			
+			if (js != null)
+			{
+				if (js.labels is JsonElement je)
+				{
+					List<(string entry, long val)> changes = new List<(string entry, long val)>();
+					using (var en1 = je.EnumerateArray())
+					{
+						while (en1.MoveNext())
+						{
+							using (var en2 = en1.Current.EnumerateArray())
+							{
+								if (en2.MoveNext())
+								{
+									string name = en2.Current.GetString();
+									if (en2.MoveNext())
+									{
+										long time = en2.Current.GetInt64();
+										if (name != null)
+										{
+											changes.Add((name, time));
+											continue;
+										}
+									}
+								}
+							}
+							throw new NoCanDo(); // failed parsing, throw
+						}
+					}
+					await Lock(() =>
+					{
+						foreach (var e in LabelPairs)
+						{
+							e.Key.Checked = false;
+							e.Value.Text = "30s";
+						}
+						foreach (var change in changes)
+						{
+							try
+							{
+								var l = LabelPairs.First(x => x.Key.Text == change.entry);
+								l.Key.Checked = true;
+								l.Value.Text = GetTime(change.val);
+							}
+							catch
+							{
+
+							}
+						}
+						t1.Text = GetTime(js.wo_captcha_cooldown);
+						t2.Text = GetTime(js.w_captcha_cooldown);
+						foreach (var elm in toDisable)
+							elm.Enabled = true;
+					});
+				}
+			}
+			else
+				throw new NoCanDo();
+		}
+
+		private async Task FirstJoin(FogginClient c)
+		{
+			try
+			{
+				Log("Attempting to get labels off connected client...");
+				using (CancellationTokenSource cts= new CancellationTokenSource())
+				{
+					cts.CancelAfter(5000);
+					await c.SendAsync(GetDataMessage, FogginClient.Opcode.Text, cts.Token);
+					Log("Request sent");
+					cts.CancelAfter(-1);
+					var msg = await c.Processor.Receive(5000);
+					Log("Response received");
+					if (msg.IsText)
+					{
+						await LoadJson(msg.Text);
+						Log("Sucessfully loaded json");
+					}
+					else
+						return;
+				}
+				
+			}
+			catch (TaskCanceledException)
+			{
+				Log("Timed out");
+				return;
+			}
+			catch (NoCanDo)
+			{
+				Log("Cannot parse input json");
+				return;
+			}
+			catch (Exception e)
+			{
+				Log(e);
+				return;
+			}
+			Server.ClientJoined -= FirstJoin;
+		}
+
+		int clientCount = 0;
+
+		FogginServer Server = new FogginServer(IPAddress.Loopback, serverPort);
+
+		const int serverPort = 54321;
+
+		const string getDataStr = "{\"action\":\"get_labels\"}";
+		static byte[] GetDataMessage = Encoding.ASCII.GetBytes(getDataStr);
+		const int connectionTimeout = 5000;
+
+		private void pictureBox1_Click(object sender, EventArgs e)
+		{
+			LogsEnabled = !LogsEnabled;
+		}
+
+		/*private async Task GetDataAsync()
+		{
+			
 			HaltUI();
 			using (ClientWebSocket ws = new ClientWebSocket())
 			using (CancellationTokenSource cts = new CancellationTokenSource())
@@ -243,7 +492,7 @@ namespace Guidzgo
 									}
 								}
 							}
-							*/
+							*//*
 							#endregion tempCode
 							var js = JsonSerializer.Deserialize<JsonThingy>(tex);
 							if (js.action == "get_labels")
@@ -305,7 +554,7 @@ namespace Guidzgo
 				else
 					ResumeUI();
 			}
-		}
+		}*/
 
 		private long ParseBox(TextBox box)
 		{

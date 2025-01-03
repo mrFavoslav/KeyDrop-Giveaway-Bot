@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,7 +17,12 @@ namespace Guidzgo
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Form1());
+			Application.Run(Get());
+		}
+
+		static Form1 Get() // the shit gets loaded before it is required for some reason, this is just for isolation
+		{
+			return Form1.Instance;
 		}
 	}
 }
