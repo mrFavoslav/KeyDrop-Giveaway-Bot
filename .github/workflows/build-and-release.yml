@@ -55,14 +55,14 @@ jobs:
     - name: Download External Script
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/keydrop_giveaway_script.js' `
+        Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/KeyDropBOT_client.js' `
             -Headers @{ Authorization = "token ${{ secrets.GH_TOKEN }}" } `
-            -OutFile 'keydrop_giveaway_script.js'
+            -OutFile 'KeyDropBOT_client.js'
 
     - name: Rename Release Binary
       run: |
         if (Test-Path app\Guidzgo\bin\Release\Guidzgo.exe) {
-          Rename-Item -Path app\Guidzgo\bin\Release\Guidzgo.exe -NewName KeyDrop-BOT.exe
+          Rename-Item -Path app\Guidzgo\bin\Release\Guidzgo.exe -NewName KeyDrop-BOT_server.exe
         } else {
           Write-Error "Release binary not found."
         }
@@ -71,9 +71,11 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          app/Guidzgo/bin/Release/KeyDrop-BOT.exe
-          keydrop_giveaway_script.js
+          app/Guidzgo/bin/Release/KeyDrop-BOT_server.exe
+          KeyDropBOT_client.js
           Source code (zip)
           Source code (tar.gz)
+        draft: true
+        prerelease: ${{ contains(github.ref, 'debug') }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
