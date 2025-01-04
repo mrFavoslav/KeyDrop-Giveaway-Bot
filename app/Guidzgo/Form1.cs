@@ -44,6 +44,8 @@ namespace Guidzgo
 		KeyValuePair<CheckBox,TextBox>[] LabelPairs;
 		TextBox t1, t2;
 
+		
+
 		Color defButtClr = Color.White;
 		private async void button1_Click(object sender, EventArgs e)
 		{
@@ -225,6 +227,7 @@ namespace Guidzgo
 			}
 		}
 
+		const bool useNewJson = true;
 		private JsonThingy GetJson()
 		{
 			FuckUpInputs();
@@ -232,7 +235,7 @@ namespace Guidzgo
 			{
 				wo_captcha_cooldown = ParseBox(t1),
 				w_captcha_cooldown = ParseBox(t2),
-				labels = (from x in LabelPairs where x.Key.Checked select new object[] { x.Key.Text, ParseBox(x.Value) }).ToArray()
+				labels = (from x in LabelPairs where x.Key.Checked || useNewJson select (useNewJson ? (new object[] { x.Key.Text, ParseBox(x.Value),x.Key.Checked }) : (new object[] { x.Key.Text, ParseBox(x.Value) }))).ToArray()
 			};
 			return j;
 		}
@@ -309,7 +312,7 @@ namespace Guidzgo
 			{
 				if (js.labels is JsonElement je)
 				{
-					List<(string entry, long val)> changes = new List<(string entry, long val)>();
+					List<(string entry, long val, bool enabled)> changes = new List<(string entry, long val, bool enabled)>();
 					using (var en1 = je.EnumerateArray())
 					{
 						while (en1.MoveNext())
@@ -324,8 +327,16 @@ namespace Guidzgo
 										long time = en2.Current.GetInt64();
 										if (name != null)
 										{
-											changes.Add((name, time));
-											continue;
+											if (en2.MoveNext())
+											{
+												changes.Add((name, time, en2.Current.GetBoolean()));
+											}
+											else // old version, there is no enabled boolean
+											{
+												changes.Add((name, time, true));
+												continue;
+											}
+											
 										}
 									}
 								}
@@ -345,7 +356,7 @@ namespace Guidzgo
 							try
 							{
 								var l = LabelPairs.First(x => x.Key.Text == change.entry);
-								l.Key.Checked = true;
+								l.Key.Checked = change.enabled;
 								l.Value.Text = GetTime(change.val);
 							}
 							catch
@@ -419,143 +430,6 @@ namespace Guidzgo
 		{
 			LogsEnabled = !LogsEnabled;
 		}
-
-		/*private async Task GetDataAsync()
-		{
-			
-			HaltUI();
-			using (ClientWebSocket ws = new ClientWebSocket())
-			using (CancellationTokenSource cts = new CancellationTokenSource())
-			{
-				try
-				{
-					var tk = cts.Token;
-					var cn = (Action)(() => cts.CancelAfter(connectionTimeout));
-					cn();
-					await ws.ConnectAsync(connectUri, tk);
-					cn();
-					await ws.SendAsync(new ArraySegment<byte>(getDataBuf), WebSocketMessageType.Text, true, tk);
-					byte[] buf = new byte[1024 * 4]; // 4KB buffer is more than enough
-					var seg = new ArraySegment<byte>(buf);
-					cn();
-
-					while (true)
-					{
-						var res = await ws.ReceiveAsync(seg, tk);
-						if (res.MessageType == WebSocketMessageType.Text)
-						{
-
-							string tex = Encoding.UTF8.GetString(buf, 0, res.Count);
-							#region tempCode
-							/*
-							var js = JsonSerializer.Deserialize<JsonElement>(tex);
-							if (js.TryGetProperty("action",out var action) && action.ValueKind == JsonValueKind.String)
-							{
-								string str = action.GetString();
-								if (str == "set_labels")
-								{
-									if (js.TryGetProperty("labels",out var labels))
-									{
-										if (labels.ValueKind == JsonValueKind.Array)
-										{
-											cts.CancelAfter(-1); // abort cancellation
-											List<(string, long)> ls = new List<(string, long)>();
-											using (var en = labels.EnumerateArray())
-											{
-												foreach (var v in en)
-												{
-													if (v.ValueKind == JsonValueKind.Array)
-													{
-														using (var en2 = v.EnumerateArray())
-														{
-															en2.MoveNext();
-															if (en2.Current.ValueKind == JsonValueKind.String)
-															{
-																string s = en2.Current.GetString();
-																en2.MoveNext();
-																if (en2.Current.ValueKind == JsonValueKind.Number)
-																{
-																	long n = en2.Current.GetInt64();
-																	if (n >= 0)
-																	{
-																		ls.Add((s, n));
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-
-											// process the received input
-											
-										}
-									}
-								}
-							}
-							*//*
-							#endregion tempCode
-							var js = JsonSerializer.Deserialize<JsonThingy>(tex);
-							if (js.action == "get_labels")
-							{
-								var a = (Action)(() =>
-								{
-									foreach (var chk in LabelPairs)
-									{
-										using (var en = ((JsonElement)js.labels).EnumerateArray())
-										{
-											foreach (var e in en)
-											{
-												using (var en2 = e.EnumerateArray())
-												{
-													en2.MoveNext();
-													if (en2.Current.GetString() == chk.Key.Text && en2.MoveNext())
-													{
-														chk.Value.Text = GetTime(en2.Current.GetInt64());
-														chk.Key.Checked = true;
-														continue;
-													}
-												}
-											}
-										}
-										chk.Key.Checked = false;
-									}
-									textBox6.Text = GetTime(js.wo_captcha_cooldown);
-									textBox7.Text = GetTime(js.w_captcha_cooldown);
-								});
-								if (InvokeRequired)
-									Invoke(a);
-								else
-									a();
-								break;
-							}
-						}
-					}
-					cn();
-					await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", tk);
-				}
-				catch (TaskCanceledException)
-				{
-					Action err = () => MessageBox.Show("Could not fetch current data from " + uriString + " in time", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					if (InvokeRequired)
-						Invoke(err);
-					else
-						err();
-				}
-				catch (Exception ex)
-				{
-					Action err = () => MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					if (InvokeRequired)
-						Invoke(err);
-					else
-						err();
-				}
-				if (InvokeRequired)
-					Invoke((Action)ResumeUI);
-				else
-					ResumeUI();
-			}
-		}*/
 
 		private long ParseBox(TextBox box)
 		{
