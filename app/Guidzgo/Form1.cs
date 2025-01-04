@@ -334,9 +334,8 @@ namespace Guidzgo
 											else // old version, there is no enabled boolean
 											{
 												changes.Add((name, time, true));
-												continue;
 											}
-											
+											continue;
 										}
 									}
 								}
