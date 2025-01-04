@@ -502,19 +502,21 @@ namespace Guidzgo
 					}
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
 				try
 				{
 					recv.Release();
 				}
 				catch { }
+				if (ex.InnerException is SocketException)
+				{
+					FinishClose();
+				}
 				throw;
 			}
 			
 		}
-
-		
 
 		public PaketoProcessor Processor = new PaketoProcessor();
 

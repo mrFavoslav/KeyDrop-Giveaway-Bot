@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.Json;
@@ -34,7 +35,6 @@ namespace Guidzgo
 				   (TextBox)groupBox1.Controls[c.Text.Substring(0, c.Name.Length - 1) + "T"])).ToArray();
 			t1 = textBox6;
 			t2 = textBox7;
-			defButtClr = button1.ForeColor;
 			logBoxSize = logBox.Height + 12;
 			LogsEnabled = false;
 			connLabel.Text = "";
@@ -46,7 +46,6 @@ namespace Guidzgo
 
 		
 
-		Color defButtClr = Color.White;
 		private async void button1_Click(object sender, EventArgs e)
 		{
 			try
@@ -72,7 +71,7 @@ namespace Guidzgo
 						if (r == d)
 						{
 							// timed out
-							Log("A timeout was reached whils trying to send data to clients");
+							Log("A timeout was reached whilst trying to send data to clients");
 						}
 						else
 						{
@@ -264,6 +263,9 @@ namespace Guidzgo
 
 			foreach (var elm in toDisable)
 				elm.Enabled = false;
+
+			// in case it does not get put into foreground
+			SetForegroundWindow(Handle);
 		}
 
 		public SemaphoreSlim uiLock = new SemaphoreSlim(1);
@@ -297,6 +299,9 @@ namespace Guidzgo
 			
 			
 		}
+
+		[DllImport("user32.dll")]
+		public static extern bool SetForegroundWindow(IntPtr hWnd);
 
 		private IEnumerable<Control> toDisable => new Control[] {
 		groupBox1, textBox6, label1, textBox7, label2, button1
@@ -378,7 +383,7 @@ namespace Guidzgo
 		{
 			try
 			{
-				Log("Attempting to get labels off connected client...");
+				Log("Attempting to get labels off of connected client...");
 				using (CancellationTokenSource cts= new CancellationTokenSource())
 				{
 					cts.CancelAfter(5000);

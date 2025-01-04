@@ -48,6 +48,7 @@ namespace Guidzgo
 					}
 					catch (Exception e)
 					{
+						
 						if (c.serv.cts.Token.IsCancellationRequested || e is SocketClosed || e is EndOfStreamException)
 						{
 							exit();
