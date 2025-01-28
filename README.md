@@ -1,32 +1,3 @@
-﻿# **!!FOR THE TIME BEING, THIS PIECE OF SOFTWARE IS IN A BUILD STATE. THE SOFTWARE CURRENTLY DOESN'T WORK!!**
-
-## Support us
-
-1. Referral
-
-    <table>
-      <tr>
-        <td>
-          <a href="https://key-drop.com/?code=FVSLV_">
-            <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="150">
-          </a>
-        </td>
-        <td style="vertical-align: middle; padding-left: 20px;">
-            <a href="https://key-drop.com/?code=FVSLV_" style="margin-left: 20px; line-height: 200px;">
-                Click here to visit KeyDrop with my referral code!
-            </a>
-        </td>
-      </tr>
-    </table>
-
-2. KO-FI
-   
-    <a href="https://ko-fi.com/Y8Y7MIGB1"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=3" height="40" ></a>
-
-# KeyDrop Giveaway Bot
-
-KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. It can automatically join giveaways based on the set interval. This project includes a **client-side JavaScript** script and a **server-side C#** application, which work together to perform the desired tasks.
-
 ## Features
 
 ### KeyDrop Bot Overview
@@ -116,3 +87,30 @@ KeyDrop-BOT/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support us
+
+1. Referral
+
+    <table>
+      <tr>
+        <td>
+          <a href="https://key-drop.com/?code=FVSLV_">
+            <img src="https://api.favoslav.cz/v1/assets/keydropbot/banner/1.png" alt="KeyDrop PROMO" width="150">
+          </a>
+        </td>
+        <td style="vertical-align: middle; padding-left: 20px;">
+            <a href="https://key-drop.com/?code=FVSLV_" style="margin-left: 20px; line-height: 200px;">
+                Click here to visit KeyDrop with my referral code!
+            </a>
+        </td>
+      </tr>
+    </table>
+
+2. KO-FI
+   
+    <a href="https://ko-fi.com/Y8Y7MIGB1"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=3" height="40" ></a>
+
+# KeyDrop Giveaway Bot
+
+KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. It can automatically join giveaways based on the set interval. This project includes a **client-side JavaScript** script and a **server-side C#** application, which work together to perform the desired tasks.
