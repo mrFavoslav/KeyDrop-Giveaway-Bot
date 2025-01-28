@@ -7,10 +7,10 @@ KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automat
 ### KeyDrop Bot Overview
 
 - **Server-side C# Application**: 
-  The server handles the core logic and operations, interacting with the Client-side JavaScript. It hosts a WebSocket server that allows users to set parameters like cooldowns, giveaways to join, and other configuration options.
+  The server handles settings, interacting with the Client-side JavaScript. It hosts a WebSocket server that allows users to set parameters like cooldowns, giveaways to join, and other configuration options.
 
 - **Client-side JavaScript**: 
-  The client script, running through Tampermonkey, automates interactions on the KeyDrop website. It listens for instructions from the server and performs automated tasks on the KeyDrop website.
+  The client script, running through Tampermonkey, automates interactions on the KeyDrop website. It listens for settings from the server and performs automated tasks on the KeyDrop website.
 
 - **Release Pipeline**: 
   The release pipeline, powered by GitHub Actions, automates the building and releasing of the latest versions of both the server-side application and the client-side script.
@@ -32,7 +32,7 @@ KeyDrop-BOT/
 
 ## Getting Started
 
-### For the Script
+### Script
 
 1. Download the latest `KeyDropBOT_client.js` from [releases](https://github.com/mrFavoslav/KeyDrop-BOT/releases).
 
@@ -66,7 +66,7 @@ KeyDrop-BOT/
 
 9. Then go to KeyDrop, click on the extension, and you should see the script. Activate it and refresh your page with F5.
 
-### For the App
+### App
 
 1. Download the latest `KeyDropBOT_server.exe` from [releases](https://github.com/mrFavoslav/KeyDrop-BOT/releases).
 
