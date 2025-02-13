@@ -8,6 +8,9 @@
 // @grant        none
 // ==/UserScript==
 
+// Toggle this to true to bypass WebSocket requirement
+const BYPASS_WEBSOCKET = true;
+
 let socketConnected = false;
 
 const labelFlagsDefault = {
@@ -21,13 +24,24 @@ const labelFlagsDefault = {
 const woccDefault = 30000;
 const wccDefault = 60000;
 
-if (!localStorage.getItem('labels') || !localStorage.getItem('wocc') || !localStorage.getItem('wcc')) {
+if ((!localStorage.getItem('labels') || !localStorage.getItem('wocc') || !localStorage.getItem('wcc')) && !BYPASS_WEBSOCKET) {
+    localStorage.setItem('labels', JSON.stringify(labelFlagsDefault));
+    localStorage.setItem('wocc', woccDefault);
+    localStorage.setItem('wcc', wccDefault);
+} else if (BYPASS_WEBSOCKET) {
     localStorage.setItem('labels', JSON.stringify(labelFlagsDefault));
     localStorage.setItem('wocc', woccDefault);
     localStorage.setItem('wcc', wccDefault);
 }
 
 async function setupWebSocket() {
+    if (BYPASS_WEBSOCKET) {
+        console.log('WebSocket bypassed. Running in standalone mode.');
+        socketConnected = true;
+        handlePage();
+        return;
+    }
+
     const socket = new WebSocket('ws://localhost:54321');
 
     socket.onopen = () => {
@@ -148,14 +162,14 @@ function getLabelSettings() {
     const labels = JSON.parse(localStorage.getItem('labels'));
     const wocc = parseInt(localStorage.getItem('wocc'));
     const wcc = parseInt(localStorage.getItem('wcc'));
-    
+
     const frequencies = {};
     for (const [label, [cooldown, enabled]] of Object.entries(labels)) {
         if (enabled) {
             frequencies[label] = cooldown;
         }
     }
-    
+
     return {
         labelFrequencies: frequencies,
         enabledLabels: Object.keys(frequencies),
@@ -200,7 +214,7 @@ function canProcessLabel(labelText) {
     const now = Date.now();
     const settings = getLabelSettings();
 
-    if (!lastAttempt || 
+    if (!lastAttempt ||
         now - parseInt(lastAttempt, 10) >= settings.labelFrequencies[labelText]) {
         localStorage.setItem(lastAttemptKey, now);
         return true;
@@ -210,7 +224,7 @@ function canProcessLabel(labelText) {
 }
 
 async function handlePage() {
-    if (!socketConnected) {
+    if (!socketConnected && !BYPASS_WEBSOCKET) {
         return;
     }
 
