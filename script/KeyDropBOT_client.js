@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 // Toggle this to true to bypass WebSocket requirement
-const BYPASS_WEBSOCKET = true;
+const BYPASS_WEBSOCKET = false;
 
 let socketConnected = false;
 
