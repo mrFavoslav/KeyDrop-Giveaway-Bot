@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
@@ -45,37 +45,54 @@ jobs:
 
     - name: Upload Artifact
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-output
         path: |
           app/Guidzgo/bin/Release/**/* 
           app/Guidzgo/bin/Debug/**/*
+        compression-level: 9
+        retention-days: 5
 
     - name: Download External Script
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/KeyDropBOT_client.js' `
-            -Headers @{ Authorization = "token ${{ secrets.GH_TOKEN }}" } `
+        $headers = @{
+          Authorization = "token ${{ secrets.GH_TOKEN }}"
+          Accept = "application/vnd.github.v3.raw"
+        }
+        try {
+          Invoke-WebRequest `
+            -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/KeyDropBOT_client.js' `
+            -Headers $headers `
             -OutFile 'KeyDropBOT_client.js'
+          Write-Output "Script downloaded successfully"
+        } catch {
+          Write-Error "Failed to download script: $_"
+          exit 1
+        }
 
     - name: Rename Release Binary
       run: |
-        if (Test-Path app\Guidzgo\bin\Release\Guidzgo.exe) {
-          Rename-Item -Path app\Guidzgo\bin\Release\Guidzgo.exe -NewName KeyDrop-BOT_server.exe
+        $releasePath = "app\Guidzgo\bin\Release\Guidzgo.exe"
+        if (Test-Path $releasePath) {
+          Rename-Item -Path $releasePath -NewName KeyDrop-BOT_server.exe
+          Write-Output "Binary renamed successfully"
         } else {
-          Write-Error "Release binary not found."
+          Write-Error "Release binary not found at: $releasePath"
+          exit 1
         }
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
           app/Guidzgo/bin/Release/KeyDrop-BOT_server.exe
           KeyDropBOT_client.js
-          Source code (zip)
-          Source code (tar.gz)
         draft: true
         prerelease: ${{ contains(github.ref, 'debug') }}
+        generate_release_notes: true
+        fail_on_unmatched_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
