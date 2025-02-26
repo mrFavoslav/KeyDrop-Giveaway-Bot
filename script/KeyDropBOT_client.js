@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         keydrop_giveaway_script_
 // @namespace    https://www.favoslav.cz/
-// @version      1.0
+// @version      1.0.1
 // @description  KeyDrop Giveaway Bot with Dynamic Label Updates and Frequency Checks
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
@@ -14,15 +14,15 @@ const BYPASS_WEBSOCKET = false;
 let socketConnected = false;
 
 const labelFlagsDefault = {
-    AMATEUR: [10000, false],
+    AMATEUR: [60000, false],
     CONTENDER: [300000, false],
     LEGEND: [900000, false],
     CHALLENGER: [3600000, false],
     CHAMPION: [21600000, false],
 };
 
-const woccDefault = 30000;
-const wccDefault = 60000;
+const woccDefault = 15000;
+const wccDefault = 30000;
 
 if ((!localStorage.getItem('labels') || !localStorage.getItem('wocc') || !localStorage.getItem('wcc')) && !BYPASS_WEBSOCKET) {
     localStorage.setItem('labels', JSON.stringify(labelFlagsDefault));
