@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         keydrop_giveaway_script_
 // @namespace    https://www.favoslav.cz/
-// @version      1.0.1
+// @version      1.0.2
 // @description  KeyDrop Giveaway Bot with Dynamic Label Updates and Frequency Checks
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
