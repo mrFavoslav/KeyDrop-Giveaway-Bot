@@ -30,6 +30,10 @@ KeyDrop-BOT/
 ├── README.md                       # Project readme (this file)
 ```
 
+## Support
+
+If you need help you can contact me, my contact info is here https://www.favoslav.cz
+
 ## Getting Started
 
 ### Script
@@ -39,6 +43,18 @@ KeyDrop-BOT/
 2. Install Tampermonkey:
 
    ![Tampermonkey Image 1](https://api.favoslav.cz/v1/assets/keydropbot/monkey/1.png)
+
+   You need to enable Developer mode so Tempermonkey works properly
+   
+      2.1. for Chrome
+
+      Open this page: Chrome://extensions
+      And on the top right you see the toggle button to enable the "Developer mode".
+
+      2.2. For other browsers
+
+      Search it on the internet or follow the tempermonkey guide how to enable dev mode for your browser, if you need help you can contact me, my contact info is here https://www.favoslav.cz
+
 
 3. Find Tampermonkey in extensions:
 
@@ -65,6 +81,8 @@ KeyDrop-BOT/
    ![Tampermonkey Image 7](https://api.favoslav.cz/v1/assets/keydropbot/monkey/7.png)
 
 9. Then go to KeyDrop, click on the extension, and you should see the script. Activate it and refresh your page with F5.
+
+10. You also need this extension [NopeCHA Chrome](https://chromewebstore.google.com/detail/nopecha-captcha-solver/dknlfmjaanfblgfdfebhijalfmhmjjjo). For other browser search "your browser nopecha extension" eg. "firefox nopecha extension"
 
 ### App
 
