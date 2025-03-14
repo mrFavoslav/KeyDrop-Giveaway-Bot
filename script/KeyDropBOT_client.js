@@ -205,7 +205,8 @@ async function handleCaptcha(button) {
         console.log("No CAPTCHA detected. Proceeding...");
     }
 
-    window.location.replace(`${window.location.origin}/giveaways/list/`);
+    //window.location.replace(`${window.location.origin}/giveaways/list/`);
+    window.history.back();
 }
 
 function canProcessLabel(labelText) {
@@ -279,14 +280,16 @@ async function handlePage() {
 
         if (button && button.disabled) {
             console.log("Giveaway button disabled. Redirecting...");
-            window.location.replace(`${window.location.origin}/giveaways/list/`);
+            //window.location.replace(`${window.location.origin}/giveaways/list/`);
+            window.history.back();
         } else if (button) {
             await timeout(offset);
             button.click();
             await handleCaptcha(button);
         } else {
             console.log("No button found. Redirecting...");
-            window.location.replace(`${window.location.origin}/giveaways/list/`);
+            //window.location.replace(`${window.location.origin}/giveaways/list/`);
+            window.history.back();
         }
     } else {
         console.log("You are on an unsupported page.");
