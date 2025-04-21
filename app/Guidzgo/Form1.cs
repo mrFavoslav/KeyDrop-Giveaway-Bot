@@ -52,7 +52,7 @@ namespace Guidzgo
 			{
 				if (clientCount == 0)
 				{
-					MessageBox.Show("There are no clients connected", "guh", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					MessageBox.Show("There are no clients connected, try again", "guh", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 					return;
 				}
 

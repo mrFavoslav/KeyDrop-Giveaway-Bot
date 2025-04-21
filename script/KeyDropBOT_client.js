@@ -16,7 +16,7 @@ let socketConnected = false;
 const labelFlagsDefault = {
     AMATEUR: [60000, false],
     CONTENDER: [300000, false],
-    LEGEND: [900000, false],
+    //LEGEND: [900000, false],
     CHALLENGER: [3600000, false],
     CHAMPION: [21600000, false],
 };
@@ -75,7 +75,7 @@ async function setupWebSocket() {
                         ['AMATEUR', labels.AMATEUR[0], labels.AMATEUR[1]],
                         ['CONTENDER', labels.CONTENDER[0], labels.CONTENDER[1]],
                         ['CHAMPION', labels.CHAMPION[0], labels.CHAMPION[1]],
-                        ['LEGEND', labels.LEGEND[0], labels.LEGEND[1]],
+                        //['LEGEND', labels.LEGEND[0], labels.LEGEND[1]],
                         ['CHALLENGER', labels.CHALLENGER[0], labels.CHALLENGER[1]]
                     ],
                     wo_captcha_cooldown: parseInt(localStorage.getItem('wocc')),
@@ -89,6 +89,7 @@ async function setupWebSocket() {
                 localStorage.setItem('labels', JSON.stringify(labelsObject));
                 localStorage.setItem('wocc', data.wo_captcha_cooldown);
                 localStorage.setItem('wcc', data.w_captcha_cooldown);
+                location.reload();
             }
         } catch (error) {
             console.error('Error parsing WebSocket message:', error);
