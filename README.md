@@ -56,6 +56,15 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 - Refer to [Script Instructions](#script)
 
+**Settings**
+
+   > Click on the gear icon for settings (for standalone mode the button should say "WebSocket Disabled")
+
+   ![Standalone 2](https://api.favoslav.cz/v1/assets/keydropbot/standalone/2.png)
+
+   ![Standalone 3](https://api.favoslav.cz/v1/assets/keydropbot/standalone/3.png)
+
+   > This setting will appear on keydrop site after the script is installed
 ---
 
 <a id="server-mode"></a>
@@ -69,6 +78,14 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 **Instructions:**
 - Refer to [App Instructions](#app)
+
+**Settings**
+
+   > For server mode the button should say "WebSocket Enabled"
+
+   ![Standalone 1](https://api.favoslav.cz/v1/assets/keydropbot/standalone/1.png)
+
+   > This button will appear on keydrop site after the script is installed
 
 ---
 
