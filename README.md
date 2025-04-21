@@ -25,16 +25,58 @@ KeyDrop-BOT/
 ├── app/
 │   └── Guidzgo.sln                 # C# Solution file for the server-side application
 ├── script/
-│   └── KeyDropBOT_client.js        # The main JavaScript client script
+│   └── giveaway_bot.user.js        # The main JavaScript client script
 ├── .gitignore                      # Git ignore configuration
 ├── README.md                       # Project readme (this file)
 ```
 
+<a id="support"></a>
 ## Support
 
 If you need help you can contact me, my contact info is here https://www.favoslav.cz
 
 ## Getting Started
+
+### Operating Modes
+
+- [Standalone Mode (Script Only)](#standalone-mode)
+- [Server Mode (App + Script)](#server-mode)
+
+---
+
+<a id="standalone-mode"></a>
+### Standalone Mode
+
+> **Use this if you only want the script and don’t need the C# app!**
+
+- **Required:**  
+  - `KeyDropBOT_client.js` (the Tampermonkey script)
+
+**Instructions:**
+
+- Refer to [Script Instructions](#script)
+
+---
+
+<a id="server-mode"></a>
+### Server Mode
+
+> **Use this if you want advanced features and remote control!**
+
+- **Required:**  
+  - `KeyDropBOT_client.js` (the Tampermonkey script)  
+  - `KeyDropBOT_server.exe` (the C# server application)
+
+**Instructions:**
+- Refer to [App Instructions](#app)
+
+---
+
+*You can jump between [Standalone Mode](#standalone-mode) and [Server Mode](#server-mode) anytime! If you need help, just [contact me](#support)*
+
+---
+
+<a id="script"></a>
 
 ### Script
 
@@ -84,6 +126,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 10. You also need this extension [NopeCHA Chrome](https://chromewebstore.google.com/detail/nopecha-captcha-solver/dknlfmjaanfblgfdfebhijalfmhmjjjo). For other browser search "your browser nopecha extension" eg. "firefox nopecha extension"
 
+<a id="app"></a>
 ### App
 
 1. Download the latest `KeyDropBOT_server.exe` from [releases](https://github.com/mrFavoslav/KeyDrop-BOT/releases).
