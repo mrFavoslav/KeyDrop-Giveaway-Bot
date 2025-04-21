@@ -63,7 +63,7 @@ jobs:
         }
         try {
           Invoke-WebRequest `
-            -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-BOT/main/script/KeyDropBOT_client.js' `
+            -Uri 'https://raw.githubusercontent.com/mrFavoslav/KeyDrop-Giveaway-Bot/refs/heads/main/tempermonkey/KeyDropBOT_client.js' `
             -Headers $headers `
             -OutFile 'KeyDropBOT_client.js'
           Write-Output "Script downloaded successfully"

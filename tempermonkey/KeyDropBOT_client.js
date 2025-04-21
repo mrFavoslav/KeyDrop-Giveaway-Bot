@@ -6,7 +6,7 @@
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
 // @grant        GM_info
-// @require      placeholder
+// @require      https://raw.githubusercontent.com/mrFavoslav/KeyDrop-Giveaway-Bot/refs/heads/main/script/script.js
 // ==/UserScript==
 
 // Toggle this to true to bypass WebSocket requirement
