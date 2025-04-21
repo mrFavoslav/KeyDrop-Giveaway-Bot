@@ -7,8 +7,8 @@
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
 // @grant        GM_info
-// @updateURL    https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/raw/main/script/KeyDropBOT_client.js
-// @downloadURL  https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/raw/main/script/KeyDropBOT_client.js
+// @updateURL    https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/raw/main/script/giveaway_bot.user.js
+// @downloadURL  https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/raw/main/script/giveaway_bot.user.js
 // ==/UserScript==
 
 if (!localStorage.getItem('script_version')) {
