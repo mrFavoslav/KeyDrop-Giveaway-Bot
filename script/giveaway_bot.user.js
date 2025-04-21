@@ -2,7 +2,7 @@
 // @name         keydrop_giveaway_script
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://www.favoslav.cz/
-// @version      1.0.5
+// @version      1.0.7
 // @description  KeyDrop Giveaway Bot
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
