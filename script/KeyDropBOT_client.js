@@ -1,3 +1,29 @@
+// ==UserScript==
+// @name         keydrop_giveaway_script
+// @namespace    https://www.favoslav.cz/
+// @version      1.0.6
+// @description  KeyDrop Giveaway Bot
+// @author       Favoslav_ & Pr0Xy
+// @include      *://*key*drop*/*
+// @grant        GM_info
+// @updateURL    placeholder
+// @downloadURL  placeholder
+// ==/UserScript==
+
+if (!localStorage.getItem('script_version')) {
+    localStorage.setItem('script_version', GM_info.script.version);
+}
+
+if (localStorage.getItem('script_version') != GM_info.script.version) {
+    if (confirm("New version available! To access new features, please update your app. Click 'OK' to visit the download page.")) {
+        window.location.href = "https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot";
+    }
+    localStorage.setItem('script_version', GM_info.script.version);
+}
+
+// Toggle this to true to bypass WebSocket requirement
+const BYPASS_WEBSOCKET = false;
+
 let socketConnected = false;
 
 const labelFlagsDefault = {
