@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name         keydrop_giveaway_script
-// @namespace    https://www.favoslav.cz/
-// @version      1.0.7
+// @namespace    http://tampermonkey.net/
+// @homepageURL  https://www.favoslav.cz/
+// @version      1.0.5
 // @description  KeyDrop Giveaway Bot
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
@@ -9,15 +10,6 @@
 // @updateURL    https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/raw/main/script/KeyDropBOT_client.js
 // @downloadURL  https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/raw/main/script/KeyDropBOT_client.js
 // ==/UserScript==
-
-//
-//     CODE
-//
-// If you have any suggestions, bug reports,
-// or want to contribute to this userscript,
-// feel free to create issues or pull requests in the GitHub repository.
-//
-// GITHUB: https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot
 
 if (!localStorage.getItem('script_version')) {
     localStorage.setItem('script_version', GM_info.script.version);
