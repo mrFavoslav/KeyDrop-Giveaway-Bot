@@ -76,7 +76,7 @@ jobs:
       run: |
         $releasePath = "app\Guidzgo\bin\Release\Guidzgo.exe"
         if (Test-Path $releasePath) {
-          Rename-Item -Path $releasePath -NewName KeyDrop-BOT_server.exe
+          Rename-Item -Path $releasePath -NewName KeyDrop-BOT_app.exe
           Write-Output "Binary renamed successfully"
         } else {
           Write-Error "Release binary not found at: $releasePath"
@@ -88,7 +88,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          app/Guidzgo/bin/Release/KeyDrop-BOT_server.exe
+          app/Guidzgo/bin/Release/KeyDrop-BOT_app.exe
           KeyDropBOT_client.js
         draft: true
         prerelease: ${{ contains(github.ref, 'debug') }}
