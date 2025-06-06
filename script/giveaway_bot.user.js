@@ -2,7 +2,7 @@
 // @name         keydrop_giveaway_script
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://www.favoslav.cz/
-// @version      1.1.0
+// @version      1.2.0-Beta
 // @description  KeyDrop Giveaway Bot
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
@@ -47,13 +47,21 @@ const labelFlagsDefault = {
     CHAMPION: [21600000, false],
 };
 
+const minPricesDefault = {
+    AMATEUR: 0,
+    CONTENDER: 0,
+    CHALLENGER: 0,
+    CHAMPION: 0,
+  };
+
 // Default cooldown times (in milliseconds)
 const woccDefault = 15000;  // Default cooldown (without captcha)
 const wccDefault = 30000;   // Captcha cooldown
 
 // Initialize settings if they don't exist and websocket is not bypassed
-if ((!localStorage.getItem('labels') || !localStorage.getItem('wocc') || !localStorage.getItem('wcc')) && !BYPASS_WEBSOCKET) {
+if ((!localStorage.getItem('labels') || !localStorage.getItem('wocc') || !localStorage.getItem('wcc') || !localStorage.getItem('minPrices') ) && !BYPASS_WEBSOCKET) {
     localStorage.setItem('labels', JSON.stringify(labelFlagsDefault));
+    localStorage.setItem('minPrices', JSON.stringify(minPricesDefault));
     localStorage.setItem('wocc', woccDefault);
     localStorage.setItem('wcc', wccDefault);
 }
@@ -191,6 +199,7 @@ if (BYPASS_WEBSOCKET) {
     
     // Load current settings or defaults
     let labels = JSON.parse(localStorage.getItem('labels')) || labelFlagsDefault;
+    let minPrices = JSON.parse(localStorage.getItem('minPrices')) || minPricesDefault;
     let wocc = localStorage.getItem('wocc') || woccDefault;
     let wcc = localStorage.getItem('wcc') || wccDefault;
 
@@ -304,7 +313,7 @@ if (BYPASS_WEBSOCKET) {
         </style>
         <div style="display: flex; gap: 24px;">
             <fieldset style="border: 1px solid #333; border-radius: 6px; padding: 8px 12px; min-width: 180px;">
-                <legend style="color:#fff;">Labels</legend>
+                <legend style="color:#fff;">Labels | Cooldown | Min. Price</legend>
                 <div class="kd-labels-list">
                     ${Object.entries(labelFlagsDefault).map(([label, [defCooldown]]) => `
                         <div class="kd-label-row">
@@ -312,8 +321,9 @@ if (BYPASS_WEBSOCKET) {
                                 <input type="checkbox" class="label-toggle" id="enabled_${label}" ${labels[label]?.[1] ? "checked" : ""}>
                                 <span>${label}</span>
                             </label>
-                            <input type="text" id="cooldown_${label}" value="${msToStr(labels[label]?.[0] ?? defCooldown)}" 
-                                style="width: 48px; margin-left: 8px;" ${labels[label]?.[1] ? "" : "disabled"}>
+                            <input type="text" id="cooldown_${label}" value="${msToStr(labels[label]?.[0] ?? defCooldown)}" style="width: 48px; margin-left: 8px;">
+
+                            <input type="text" id="price_${label}" value="${minPrices[label] ?? 0}" style="width: 48px; margin-left: 8px;">
                         </div>
                     `).join('')}
                 </div>
@@ -321,11 +331,11 @@ if (BYPASS_WEBSOCKET) {
             <div style="display: flex; flex-direction: column; gap: 8px; min-width: 120px;">
                 <label>
                     <span>Default Cooldown</span><br>
-                    <input type="text" id="default_cooldown" value="${msToStr(wocc)}" style="width: 60px;">
+                    <input type="text" id="default_cooldown" value="${msToStr(wocc)}" style="width: 60px; color: black;">
                 </label>
                 <label>
                     <span>Captcha Cooldown</span><br>
-                    <input type="text" id="captcha_cooldown" value="${msToStr(wcc)}" style="width: 60px;">
+                    <input type="text" id="captcha_cooldown" value="${msToStr(wcc)}" style="width: 60px; color: black;">
                 </label>
                 <button class="kd-update-btn" id="form_send">Update</button>
             </div>
@@ -337,8 +347,6 @@ if (BYPASS_WEBSOCKET) {
     panel.querySelectorAll('.label-toggle').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const labelId = this.id.replace('enabled_', '');
-            const cooldownInput = document.getElementById(`cooldown_${labelId}`);
-            cooldownInput.disabled = !this.checked;
             logger.debug(`Toggle ${labelId}: ${this.checked ? 'enabled' : 'disabled'} 🔧`);
         });
     });
@@ -352,9 +360,10 @@ if (BYPASS_WEBSOCKET) {
         }
 
         // Reload current settings from localStorage every time we open the panel
-        let currentLabels = JSON.parse(localStorage.getItem('labels'));
-        let currentWocc = parseInt(localStorage.getItem('wocc'));
-        let currentWcc = parseInt(localStorage.getItem('wcc'));
+        let currentLabels = JSON.parse(localStorage.getItem('labels')) || labelFlagsDefault;
+        let minPrices = JSON.parse(localStorage.getItem('minPrices')) || minPricesDefault;
+        let currentWocc = parseInt(localStorage.getItem('wocc')) || woccDefault;
+        let currentWcc = parseInt(localStorage.getItem('wcc')) || wccDefault
         
         logger.info(`Opening settings panel. 🛠️`);
         
@@ -367,7 +376,8 @@ if (BYPASS_WEBSOCKET) {
                     <span>${label}</span>
                 </label>
                 <input type="text" id="cooldown_${label}" value="${msToStr(currentLabels[label]?.[0] ?? defCooldown)}" 
-                    style="width: 48px; margin-left: 8px;" ${currentLabels[label]?.[1] ? "" : "disabled"}>
+                    style="width: 48px; margin-left: 8px;">
+                <input type="text" id="price_${label}" value="${minPrices[label] ?? 0}" style="width: 48px; margin-left: 8px;">
             </div>
         `).join('');
         
@@ -405,11 +415,20 @@ if (BYPASS_WEBSOCKET) {
             const cooldownStr = document.getElementById(`cooldown_${label}`).value;
             updatedLabels[label] = [strToMs(cooldownStr), enabled];
         }
+        const updatedPrices = {};
+        for (const label of Object.keys(minPricesDefault)) {
+          const priceValue = document.getElementById(`price_${label}`)?.value;
+          if (priceValue !== undefined) {
+            const priceNum = parseFloat(priceValue);
+            updatedPrices[label] = isNaN(priceNum) ? 0 : priceNum;
+          }
+        }
         const updatedWocc = strToMs(document.getElementById('default_cooldown').value);
         const updatedWcc = strToMs(document.getElementById('captcha_cooldown').value);
 
         // Save to localStorage
         localStorage.setItem('labels', JSON.stringify(updatedLabels));
+        localStorage.setItem('minPrices', JSON.stringify(updatedPrices));
         localStorage.setItem('wocc', updatedWocc);
         localStorage.setItem('wcc', updatedWcc);
 
@@ -540,6 +559,42 @@ function findButtonsByLabelText(labelText) {
     return null;
 }
 
+// Find price corresponding to a specific giveaway category
+function findPriceByLabelText(labelText) {
+    const labels = document.querySelectorAll(
+      'p[data-testid="label-single-card-giveaway-category"]'
+    );
+  
+    for (const label of labels) {
+      if (label.textContent.trim() === labelText) {
+        const parentDiv = label.closest(
+          'div[data-testid="div-active-giveaways-list-single-card"]'
+        );
+        if (parentDiv) {
+          // Find the price div inside the same card
+          const priceDiv = parentDiv.querySelector(
+            'div[data-testid="label-single-card-giveaway-reward-value-amount"]'
+          );
+          if (priceDiv) {
+            const span = priceDiv.querySelector('span[data-testid=""]');
+            if (span) {
+              const price = span.textContent.trim();
+              logger.giveaway(`Found price for category "${labelText}": ${price} 💰`);
+
+              const numericString = price.replace(/[^\d.]/g, '');
+              const priceInt = parseFloat(numericString);
+
+              return priceInt;
+            }
+          }
+        }
+      }
+    }
+  
+    logger.warn(`No price found for category "${labelText}".`);
+    return null;
+  }
+
 // Check if a captcha is present on the page
 function checkForCaptcha() {
     return document.querySelector(
@@ -550,23 +605,25 @@ function checkForCaptcha() {
 // Get current label settings from localStorage
 function getLabelSettings() {
     const labels = JSON.parse(localStorage.getItem('labels'));
+    const minPrices = JSON.parse(localStorage.getItem('minPrices'));
     const wocc = parseInt(localStorage.getItem('wocc'));
     const wcc = parseInt(localStorage.getItem('wcc'));
-
+  
     const frequencies = {};
     for (const [label, [cooldown, enabled]] of Object.entries(labels)) {
-        if (enabled) {
-            frequencies[label] = cooldown;
-        }
+      if (enabled) {
+        frequencies[label] = cooldown;
+      }
     }
-
+  
     return {
-        labelFrequencies: frequencies,
-        enabledLabels: Object.keys(frequencies),
-        wocc,
-        wcc
+      labelFrequencies: frequencies,
+      enabledLabels: Object.keys(frequencies),
+      wocc,
+      wcc,
+      minPrices
     };
-}
+  }
 
 // Handle captcha detection and resolution
 async function handleCaptcha(button) {
@@ -639,6 +696,7 @@ async function handlePage() {
     // Handle giveaways list page
     if (currentPath.includes("/giveaways/list")) {
         logger.info(`You are on the giveaways list page! 📜`);
+
         await waitForElement(
             'p[data-testid="label-single-card-giveaway-category"]'
         );
@@ -656,8 +714,12 @@ async function handlePage() {
             if (labelText && canProcessLabel(labelText)) {
                 logger.giveaway(`Looking for ${labelText} giveaway to join... 🔍`);
                 const button = findButtonsByLabelText(labelText);
+                const price = findPriceByLabelText(labelText);
 
-                if (button) {
+                const minPrice = settings.minPrices[labelText];
+
+                if (button && price >= minPrice) {
+
                     await timeout(offset);
                     logger.giveaway(`Joining a ${labelText} giveaway! 🎮`);
                     button.click();
