@@ -802,4 +802,10 @@ async function handlePage() {
     }).observe(document, { subtree: true, childList: true });
     
     logger.success(`Bot initialization complete! Ready to find giveaways.`);
+
+    // === AUTO RELOAD EVERY 15 MINUTES TO REFRESH JWT ===
+    setInterval(() => {
+        logger.info('Automatic page reload to renew the JWT token. 🔄');
+        location.reload();
+    }, 15 * 60 * 1000); // 30 minut
 })();
