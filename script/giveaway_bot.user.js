@@ -196,7 +196,7 @@ document.body.appendChild(toggleButton);
  */
 if (BYPASS_WEBSOCKET) {
     logger.info(`Running in standalone mode! ✨ WebSocket bypassed~`);
-    
+
     // Load current settings or defaults
     let labels = JSON.parse(localStorage.getItem('labels')) || labelFlagsDefault;
     let minPrices = JSON.parse(localStorage.getItem('minPrices')) || minPricesDefault;
@@ -364,9 +364,9 @@ if (BYPASS_WEBSOCKET) {
         let minPrices = JSON.parse(localStorage.getItem('minPrices')) || minPricesDefault;
         let currentWocc = parseInt(localStorage.getItem('wocc')) || woccDefault;
         let currentWcc = parseInt(localStorage.getItem('wcc')) || wccDefault
-        
+
         logger.info(`Opening settings panel. 🛠️`);
-        
+
         // Update panel HTML with current values
         const labelsList = panel.querySelector('.kd-labels-list');
         labelsList.innerHTML = Object.entries(labelFlagsDefault).map(([label, [defCooldown]]) => `
@@ -375,16 +375,16 @@ if (BYPASS_WEBSOCKET) {
                     <input type="checkbox" class="label-toggle" id="enabled_${label}" ${currentLabels[label]?.[1] ? "checked" : ""}>
                     <span>${label}</span>
                 </label>
-                <input type="text" id="cooldown_${label}" value="${msToStr(currentLabels[label]?.[0] ?? defCooldown)}" 
+                <input type="text" id="cooldown_${label}" value="${msToStr(currentLabels[label]?.[0] ?? defCooldown)}"
                     style="width: 48px; margin-left: 8px;">
                 <input type="text" id="price_${label}" value="${minPrices[label] ?? 0}" style="width: 48px; margin-left: 8px;">
             </div>
         `).join('');
-        
+
         // Update cooldown values
         panel.querySelector('#default_cooldown').value = msToStr(currentWocc);
         panel.querySelector('#captcha_cooldown').value = msToStr(currentWcc);
-        
+
         // Re-attach checkbox event listeners
         panel.querySelectorAll('.label-toggle').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
@@ -394,7 +394,7 @@ if (BYPASS_WEBSOCKET) {
                 logger.debug(`Toggle ${labelId}: ${this.checked ? 'enabled' : 'disabled'} 🔧`);
             });
         });
-        
+
         panel.style.display = "block";
     };
 
@@ -443,7 +443,7 @@ if (BYPASS_WEBSOCKET) {
             padding: 10px 18px; border-radius: 8px; font-size: 16px; z-index: 10002;
             box-shadow: 0 2px 8px #0005; opacity: 0.95;`;
         document.body.appendChild(notif);
-        
+
         // Short delay before reload
         setTimeout(() => location.reload(), 500);
     };
@@ -509,7 +509,7 @@ async function setupWebSocket() {
 
                 socket.send(JSON.stringify(responseData));
                 logger.ws(`Sent label settings back to server~ 📤`);
-            } 
+            }
             // Handle label updates from external app
             else if (data.action === "update_labels") {
                 logger.ws(`Received updated settings from server! 📝`);
@@ -564,7 +564,7 @@ function findPriceByLabelText(labelText) {
     const labels = document.querySelectorAll(
       'p[data-testid="label-single-card-giveaway-category"]'
     );
-  
+
     for (const label of labels) {
       if (label.textContent.trim() === labelText) {
         const parentDiv = label.closest(
@@ -590,7 +590,7 @@ function findPriceByLabelText(labelText) {
         }
       }
     }
-  
+
     logger.warn(`No price found for category "${labelText}".`);
     return null;
   }
@@ -608,14 +608,14 @@ function getLabelSettings() {
     const minPrices = JSON.parse(localStorage.getItem('minPrices'));
     const wocc = parseInt(localStorage.getItem('wocc'));
     const wcc = parseInt(localStorage.getItem('wcc'));
-  
+
     const frequencies = {};
     for (const [label, [cooldown, enabled]] of Object.entries(labels)) {
       if (enabled) {
         frequencies[label] = cooldown;
       }
     }
-  
+
     return {
       labelFrequencies: frequencies,
       enabledLabels: Object.keys(frequencies),
@@ -629,7 +629,7 @@ function getLabelSettings() {
 async function handleCaptcha(button) {
     const settings = getLabelSettings();
     logger.captcha(`Watching for captcha... 👀`);
-    
+
     const captchaDetected = await new Promise((resolve) => {
         const observer = new MutationObserver(() => {
             if (checkForCaptcha()) {
@@ -736,7 +736,7 @@ async function handlePage() {
             storedIndex = (storedIndex + 1) % settings.enabledLabels.length;
             if (!processed) await timeout(1000);
         }
-    } 
+    }
     // Handle individual giveaway page
     else if (currentPath.includes("/giveaways/keydrop")) {
         logger.info(`You are on a giveaway details page! 🎁`);
@@ -800,12 +800,12 @@ async function handlePage() {
             handlePage();
         }
     }).observe(document, { subtree: true, childList: true });
-    
+
     logger.success(`Bot initialization complete! Ready to find giveaways.`);
 
     // === AUTO RELOAD EVERY 15 MINUTES TO REFRESH JWT ===
     setInterval(() => {
         logger.info('Automatic page reload to renew the JWT token. 🔄');
         location.reload();
-    }, 15 * 60 * 1000); // 30 minut
+    }, 15 * 60 * 1000); // 15 minutes
 })();
