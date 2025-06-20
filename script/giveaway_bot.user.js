@@ -2,7 +2,7 @@
 // @name         keydrop_giveaway_script
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://www.favoslav.cz/
-// @version      1.2.1-beta
+// @version      1.2.2-beta
 // @description  KeyDrop Giveaway Bot
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
@@ -108,6 +108,37 @@ const logger = {
         console.log(`%c 🔌 WEBSOCKET: ${message}`, 'color: #00bcd4; font-weight: bold;', ...args);
     }
 };
+
+// Convert number format to a standard format
+function normalizeNumberFormat(numberStr) {
+    numberStr = numberStr.replace(/ /g, '').replace(/'/g, '');
+    
+    if (numberStr.includes(',') && numberStr.includes('.') && numberStr.indexOf('.') < numberStr.indexOf(',')) {
+        return numberStr.replace(/\./g, '').replace(',', '.');
+    }
+    
+    if (numberStr.includes(',') && numberStr.includes('.') && numberStr.indexOf(',') < numberStr.indexOf('.')) {
+        return numberStr.replace(/,/g, '');
+    }
+    
+    if (numberStr.includes(',') && !numberStr.includes('.')) {
+        if (numberStr.length - numberStr.lastIndexOf(',') <= 3) {
+            return numberStr.replace(',', '.');
+        } else {
+            return numberStr.replace(/,/g, '');
+        }
+    }
+    
+    if (numberStr.includes('.') && !numberStr.includes(',')) {
+        if (numberStr.length - numberStr.lastIndexOf('.') <= 3) {
+            return numberStr;
+        } else {
+            return numberStr.replace(/\./g, '');
+        }
+    }
+    
+    return numberStr;
+}
 
 // Create promise-based delay
 async function timeout(ms) {
@@ -419,7 +450,7 @@ if (BYPASS_WEBSOCKET) {
         for (const label of Object.keys(minPricesDefault)) {
           const priceValue = document.getElementById(`price_${label}`)?.value;
           if (priceValue !== undefined) {
-            const priceNum = parseFloat(priceValue);
+            const priceNum = parseFloat(normalizeNumberFormat(priceValue));
             updatedPrices[label] = isNaN(priceNum) ? 0 : priceNum;
           }
         }
@@ -580,9 +611,9 @@ function findPriceByLabelText(labelText) {
             if (span) {
               const price = span.textContent.trim();
               logger.giveaway(`Found price for category "${labelText}": ${price} 💰`);
-
-              const numericString = price.replace(/[^\d.]/g, '');
-              const priceInt = parseFloat(numericString);
+              const withoutCurrency = price.replace(/[^0-9.,]/g, '');
+              const priceInt = parseFloat(normalizeNumberFormat(withoutCurrency));
+              logger.giveaway(`Normalized price for "${labelText}": ${priceInt} 💰`);
 
               return priceInt;
             }
