@@ -7,6 +7,13 @@ KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automat
 Please read the release info for this version, this version and every other beta versinon is in beta so some funcionality may be buggy. 
 https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/releases/tag/v1.2.0-beta
 
+Please input numbers for min prices in this format:
+  - xxxxx.xx
+  - eg. 10251.26
+  - eg. 10.50
+  - eg. 20
+  - eg. 0.89
+
 ## Features
 
 ### KeyDrop Bot Overview
