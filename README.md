@@ -1,12 +1,3 @@
-# ❗ ANNOUNCEMENT
-## THE BOT IS CURRENTLY A BIT BUGGY
-It tries to join giveaways multiple times and doesn’t return to /giveaways/list, etc.
-I expect everything to be resolved within a maximum of two weeks.
-Please be patient and sorry for any inconvenience!
-
-If you find any other bugs or have questions, feel free to reach out!
-Thank you for your understanding and support!
-
 # KeyDrop Giveaway Bot
 
 KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. It can automatically join giveaways based on the set interval. This project includes a **client-side JavaScript** script and a **server-side C# app** application, which work together to perform the desired tasks.
