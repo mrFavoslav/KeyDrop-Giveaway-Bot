@@ -2,7 +2,7 @@
 // @name         keydrop_giveaway_script
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://www.favoslav.cz/
-// @version      1.2.1-beta
+// @version      1.2.3-beta
 // @description  KeyDrop Giveaway Bot
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
@@ -69,6 +69,10 @@ if ((!localStorage.getItem('labels') || !localStorage.getItem('wocc') || !localS
 // Connection status tracking
 let socketConnected = false;
 
+// Force reload if it stucks
+let lastHandleTime = Date.now();
+let FORCE_RELOAD_TIMEOUT = 2 * 60 * 1000;
+
 /**
  * SECTION 3: LOGGER & UTILITY FUNCTIONS
  * Enhanced logging and helper functions
@@ -108,6 +112,37 @@ const logger = {
         console.log(`%c 🔌 WEBSOCKET: ${message}`, 'color: #00bcd4; font-weight: bold;', ...args);
     }
 };
+
+// Convert number format to a standard format
+function normalizeNumberFormat(numberStr) {
+    numberStr = numberStr.replace(/ /g, '').replace(/'/g, '');
+    
+    if (numberStr.includes(',') && numberStr.includes('.') && numberStr.indexOf('.') < numberStr.indexOf(',')) {
+        return numberStr.replace(/\./g, '').replace(',', '.');
+    }
+    
+    if (numberStr.includes(',') && numberStr.includes('.') && numberStr.indexOf(',') < numberStr.indexOf('.')) {
+        return numberStr.replace(/,/g, '');
+    }
+    
+    if (numberStr.includes(',') && !numberStr.includes('.')) {
+        if (numberStr.length - numberStr.lastIndexOf(',') <= 3) {
+            return numberStr.replace(',', '.');
+        } else {
+            return numberStr.replace(/,/g, '');
+        }
+    }
+    
+    if (numberStr.includes('.') && !numberStr.includes(',')) {
+        if (numberStr.length - numberStr.lastIndexOf('.') <= 3) {
+            return numberStr;
+        } else {
+            return numberStr.replace(/\./g, '');
+        }
+    }
+    
+    return numberStr;
+}
 
 // Create promise-based delay
 async function timeout(ms) {
@@ -419,7 +454,7 @@ if (BYPASS_WEBSOCKET) {
         for (const label of Object.keys(minPricesDefault)) {
           const priceValue = document.getElementById(`price_${label}`)?.value;
           if (priceValue !== undefined) {
-            const priceNum = parseFloat(priceValue);
+            const priceNum = parseFloat(normalizeNumberFormat(priceValue));
             updatedPrices[label] = isNaN(priceNum) ? 0 : priceNum;
           }
         }
@@ -472,8 +507,14 @@ async function setupWebSocket() {
     };
 
     // Error handler
+    let wsErrorCount = 0; // Track consecutive errors
     socket.onerror = (error) => {
         logger.error(`WebSocket error detected: ${error} 💔`);
+        wsErrorCount++;
+        if(wsErrorCount >= 8) {
+            logger.error('Too many WebSocket errors! Force reloading page... 🔄');
+            location.reload();
+        }
     };
 
     // Connection closed handler with retry
@@ -580,9 +621,9 @@ function findPriceByLabelText(labelText) {
             if (span) {
               const price = span.textContent.trim();
               logger.giveaway(`Found price for category "${labelText}": ${price} 💰`);
-
-              const numericString = price.replace(/[^\d.]/g, '');
-              const priceInt = parseFloat(numericString);
+              const withoutCurrency = price.replace(/[^0-9.,]/g, '');
+              const priceInt = parseFloat(normalizeNumberFormat(withoutCurrency));
+              logger.giveaway(`Normalized price for "${labelText}": ${priceInt} 💰`);
 
               return priceInt;
             }
@@ -689,6 +730,7 @@ async function handlePage() {
         return;
     }
 
+    lastHandleTime = Date.now();
     const settings = getLabelSettings();
     const currentPath = window.location.pathname;
     const offset = Math.random() * 1000 + 200; // Random delay for human-like behavior
@@ -719,7 +761,6 @@ async function handlePage() {
                 const minPrice = settings.minPrices[labelText];
 
                 if (button && price >= minPrice) {
-
                     await timeout(offset);
                     logger.giveaway(`Joining a ${labelText} giveaway! 🎮`);
                     button.click();
@@ -746,7 +787,7 @@ async function handlePage() {
             'button[data-testid="btn-giveaway-join-the-giveaway"]'
         );
 
-        if (button && button.disabled) {
+        if (button && (button.disabled || button.textContent !== "Join the Giveaway")) {
             logger.warn(`Giveaway button is disabled. Already joined? Going back... 🔙`);
             window.history.back();
         } else if (button) {
@@ -803,9 +844,11 @@ async function handlePage() {
 
     logger.success(`Bot initialization complete! Ready to find giveaways.`);
 
-    // === AUTO RELOAD EVERY 15 MINUTES TO REFRESH JWT ===
+    // === AUTO RELOAD EVERY 2 MINUTES IF STUCK ===
     setInterval(() => {
-        logger.info('Automatic page reload to renew the JWT token. 🔄');
-        location.reload();
-    }, 15 * 60 * 1000); // 15 minutes
+        if (Date.now() - lastHandleTime > FORCE_RELOAD_TIMEOUT) {
+            logger.warn('Automatic page reload due to inactivity. 🔄');
+            location.reload();
+        }
+    }, 10000);
 })();
