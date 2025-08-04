@@ -2,6 +2,10 @@
 
 KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. It can automatically join giveaways based on the set interval. This project includes a **client-side JavaScript** script and a **server-side C# app** application, which work together to perform the desired tasks.
 
+# 🛑 Warning 
+
+The "server-side" app is deprecated. Use it at your own risk; I will not fix bugs or resolve any issues related to the app. If you're unsure, please use the [standalone mode](#standalone-mode).
+
 # ⚠️ DISCLAIMER
 
 Please read the release info for this version, this version and every other beta versinon is in beta so some funcionality may be buggy. 
@@ -204,3 +208,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 2. KO-FI
    
     <a href="https://ko-fi.com/Y8Y7MIGB1"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=3" height="40" ></a>
+
