@@ -75,7 +75,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 **Settings**
 
-   > Click on the gear icon for settings (for standalone mode the button should say "Standalone")
+   > 🛑 Click on the gear icon for settings (for standalone mode the button should say "Standalone")
 
    ![Standalone 2](https://api.favoslav.cz/v1/assets/keydropbot/standalone/2.png)
 
@@ -98,7 +98,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 **Settings**
 
-   > For server mode the button should say "WebSocket Enabled"
+   > 🛑 For server mode the button should say "App Control"
 
    ![Standalone 1](https://api.favoslav.cz/v1/assets/keydropbot/standalone/1.png)
 
@@ -209,4 +209,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 2. KO-FI
    
     <a href="https://ko-fi.com/Y8Y7MIGB1"><img src="https://storage.ko-fi.com/cdn/kofi3.png?v=3" height="40" ></a>
+
 
