@@ -1,27 +1,23 @@
-# ❗ ANNOUNCEMENT
-## THE BOT IS CURRENTLY A BIT BUGGY
-It tries to join giveaways multiple times and doesn’t return to /giveaways/list, etc.
-I expect everything to be resolved within a maximum of two weeks.
-Please be patient and sorry for any inconvenience!
-
-If you find any other bugs or have questions, feel free to reach out!
-Thank you for your understanding and support!
-
 # KeyDrop Giveaway Bot
 
 KeyDrop-BOT is a bot designed to interact with the **KeyDrop** platform, automate and perform tasks related to giveaways. It can automatically join giveaways based on the set interval. This project includes a **client-side JavaScript** script and a **server-side C# app** application, which work together to perform the desired tasks.
 
-# ⚠️ DISCLAIMER
+<a id="manual"></a>
+# 📑 Manual
 
-Please read the release info for this version, this version and every other beta versinon is in beta so some funcionality may be buggy. 
-https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot/releases/tag/v1.2.0-beta
+This bot supports any language and currency. However, if you encounter any issues or buggy behavior, please try switching to English and EUR.
 
-Please input numbers for min prices in this format:
-  - xxxxx.xx
-  - eg. 10251.26
-  - eg. 10.50
-  - eg. 20
-  - eg. 0.89
+## Entering Prices for "Min Prices"
+
+The script should accept multiple price formats. If you experience problems, use the following format:
+
+- Do not use commas to separate thousands (e.g., write 10000 instead of 10,000).
+- Use a period (.) as the decimal separator for decimal numbers (e.g., 12.50).
+
+
+## 🛑 Warning
+
+The app may work but is currently not officially supported. If you encounter issues, switch the script to [Standalone Mode](#standalone-mode).
 
 ## Features
 
@@ -61,7 +57,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 ### Operating Modes
 
 - [Standalone Mode (Script Only)](#standalone-mode)
-- [Server Mode (App + Script)](#server-mode)
+- [App Control (App + Script)](#server-mode)
 
 ---
 
@@ -79,7 +75,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 **Settings**
 
-   > Click on the gear icon for settings (for standalone mode the button should say "WebSocket Disabled")
+   > Click on the gear icon for settings (for standalone mode the button should say "Standalone")
 
    ![Standalone 2](https://api.favoslav.cz/v1/assets/keydropbot/standalone/2.png)
 
@@ -89,7 +85,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 ---
 
 <a id="server-mode"></a>
-### Server Mode
+### App Control
 
 > **Use this if you want advanced features and remote control!**
 
@@ -162,7 +158,7 @@ If you need help you can contact me, my contact info is here https://www.favosla
 
 9. Then go to KeyDrop, click on the extension, and you should see the script. Activate it and refresh your page with F5.
 
-10. You also need this extension [NopeCHA Chrome](https://chromewebstore.google.com/detail/nopecha-captcha-solver/dknlfmjaanfblgfdfebhijalfmhmjjjo). For other browser search "your browser nopecha extension" eg. "firefox nopecha extension"
+10. (This should be optional, if you experience issues with captcha try installing this) You also need this extension [NopeCHA Chrome](https://chromewebstore.google.com/detail/nopecha-captcha-solver/dknlfmjaanfblgfdfebhijalfmhmjjjo). For other browser search "your browser nopecha extension" eg. "firefox nopecha extension"
 
 <a id="app"></a>
 ### App

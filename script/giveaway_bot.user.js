@@ -2,7 +2,7 @@
 // @name         keydrop_giveaway_script
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://www.favoslav.cz/
-// @version      1.2.3-beta
+// @version      1.3.0
 // @description  KeyDrop Giveaway Bot
 // @author       Favoslav_ & Pr0Xy
 // @include      *://*key*drop*/*
@@ -19,7 +19,7 @@ if (!localStorage.getItem('script_version')) {
     localStorage.setItem('script_version', GM_info.script.version);
 }
 
-if (localStorage.getItem('script_version') != GM_info.script.version) {
+if (localStorage.getItem('script_version') < GM_info.script.version) {
     if (confirm("New version available! To access new features, please update your app. Click 'OK' to visit the download page.")) {
         window.location.href = "https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot";
     }
@@ -36,6 +36,13 @@ let BYPASS_WEBSOCKET = localStorage.getItem('bypass_websocket') === 'true' ? tru
 // Set default to true for first-time users
 if (!localStorage.getItem('bypass_websocket')) {
     localStorage.setItem('bypass_websocket', 'true');
+}
+
+if (!localStorage.getItem('first_time_setup_done')) {
+    if (confirm("Please read the manual before using the bot! Click 'OK' to visit the GitHub page.")) {
+        window.location.href = "https://github.com/mrFavoslav/KeyDrop-Giveaway-Bot#manual";
+    }
+    localStorage.setItem('first_time_setup_done', 'true');
 }
 
 // Default label settings
@@ -209,7 +216,7 @@ function toggleBypassWebsocket() {
  */
 // WebSocket toggle button
 const toggleButton = document.createElement('button');
-toggleButton.innerHTML = `WebSocket ${!BYPASS_WEBSOCKET ? 'Enabled' : 'Disabled'}`;
+toggleButton.innerHTML = BYPASS_WEBSOCKET ? 'Standalone' : 'App Control';
 toggleButton.style = `
     position: fixed;
     bottom: 20px;
@@ -787,7 +794,7 @@ async function handlePage() {
             'button[data-testid="btn-giveaway-join-the-giveaway"]'
         );
 
-        if (button && (button.disabled || button.textContent !== "Join the Giveaway")) {
+        if (button && (button.disabled || button.querySelector('svg'))) {
             logger.warn(`Giveaway button is disabled. Already joined? Going back... 🔙`);
             window.history.back();
         } else if (button) {
